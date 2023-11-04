@@ -101,7 +101,7 @@ function viewChatBotWindow() {
 	templateManager.window.classList.remove("fade");
 
 	if (templateManager.socket === undefined) {
-		window.socketManager = new WebSocketManager("ws://185.217.131.237/websocketio");
+		window.socketManager = new WebSocketManager("ws://185.217.131.237:8000/websocketio");
 		window.socketManager.init();
 
 		templateManager.socket = window.socketManager;
