@@ -225,9 +225,11 @@ function rocket() {
 	font-size: 2vh;
 	padding: 1vh 1.5vw 0 1.5vw;
 	display: flex;
+	flex-direction: column;
 }
 #chat .chat-window-message span{
 	display: flex;
+	flex-direction: column;
 	width: 60%;
 	background: #DDD;
 	padding: 2vh;
