@@ -17,7 +17,7 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 
 	$scope.sendMessage = () => {
 		console.log($scope.message)
-		if (!$scope.message) return;
+		if (!$scope.sms) return;
 		$http.post(
 			"/message/new",
 			{
@@ -27,13 +27,13 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 			}
 		).then(response => {
 			$scope.messages.push({
-				content: $scope.message,
+				content: $scope.sms,
 				socket: $scope.currentChat.socket,
 				chat_id: $scope.currentChat.id,
 				read: true,
 				operator: true
 			});
-			$scope.message = undefined;
+			$scope.sms = undefined;
 			$scope.panel.scrollTop = $scope.panel.scrollHeight;
 		}, exception => {
 			console.error(exception);

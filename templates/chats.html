@@ -15,12 +15,12 @@
 		</div>
 		<div class="chat-panel">
 			<div ng-repeat="message in messages" class="chat-message" ng-class="{'operator-message': message.operator}">
-				<span ng-show="!message.file">[[message.content]]</span>
-				<img ng-show="message.file" src="[[message.content]]">
+				<span ng-if="!message.file">[[message.content]]</span>
+				<img ng-if="message.file" src="[[message.content]]">
 			</div>
 		</div>
 		<div class="chat-footer">
-			<input ng-disabled="currentChat == undefined" onkeypress="onenterkey(event)" type="text" placeholder="Сообщение" ng-model="message">
+			<input ng-disabled="currentChat == undefined" onkeypress="onenterkey(event)" type="text" placeholder="Сообщение" ng-model="sms">
 			<button><i class="fas fa-paper-plane-top"></i></button>
 		</div>
 	</div>
