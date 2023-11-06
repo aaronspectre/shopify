@@ -1,7 +1,7 @@
 <div id="wrapper" ng-controller="chats">
 	<div id="sidebar">
 		<div class="sidebar-search">
-			<input type="text" placeholder="Search" ng-model="query" ng-change="search()">
+			<input type="text" placeholder="Поиск" ng-model="query" ng-change="search()">
 		</div>
 		<ul>
 			<li ng-repeat="chat in container track by $index" ng-click="selectChat(chat)" ng-class="{'active-chat': currentChat.socket == chat.socket}">
