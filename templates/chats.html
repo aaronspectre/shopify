@@ -15,7 +15,8 @@
 		</div>
 		<div class="chat-panel">
 			<div ng-repeat="message in messages" class="chat-message" ng-class="{'operator-message': message.operator}">
-				<span>[[message.content]]</span>
+				<span ng-show="!message.file">[[message.content]]</span>
+				<img ng-show="message.file" src="[[message.content]]">
 			</div>
 		</div>
 		<div class="chat-footer">

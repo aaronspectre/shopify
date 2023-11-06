@@ -11,5 +11,6 @@ class MessageModel(BaseModel):
 	content: str
 	read: bool
 	operator: bool
+	file: bool
 	date: datetime
 	chat_id: int
