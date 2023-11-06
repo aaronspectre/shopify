@@ -11,8 +11,6 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from fastapi.responses import PlainTextResponse
-
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
@@ -28,11 +26,6 @@ connection_pool = dict()
 @root.get('/')
 async def index(request: Request):
 	pass
-
-@root.get("/.well-known/pki-validation/704FF1E888BD08081B8DF6B3B0DD8E1C.txt")
-async def validation(request: Request):
-	with open("704FF1E888BD08081B8DF6B3B0DD8E1C.txt", 'r') as file:
-		return PlainTextResponse(file.read())
 
 @root.websocket("/websocketio")
 async def websocket(socketio: WebSocket):

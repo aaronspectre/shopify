@@ -1,10 +1,10 @@
 <div id="wrapper" ng-controller="chats">
 	<div id="sidebar">
 		<div class="sidebar-search">
-			<input type="text" placeholder="Search" ng-model="query">
+			<input type="text" placeholder="Search" ng-model="query" ng-change="search()">
 		</div>
 		<ul>
-			<li ng-repeat="chat in chats track by $index" ng-click="selectChat(chat)" ng-class="{'active-chat': currentChat.socket == chat.socket}">
+			<li ng-repeat="chat in container track by $index" ng-click="selectChat(chat)" ng-class="{'active-chat': currentChat.socket == chat.socket}">
 				[[chat.socket]]
 			</li>
 		</ul>
@@ -20,7 +20,7 @@
 		</div>
 		<div class="chat-footer">
 			<input ng-disabled="currentChat == undefined" onkeypress="onenterkey(event)" type="text" placeholder="Message" ng-model="message">
-			<button>➤</button>
+			<button><i class="fas fa-paper-plane-top"></i></button>
 		</div>
 	</div>
 </div>

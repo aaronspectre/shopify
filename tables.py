@@ -26,6 +26,8 @@ class Message(Base):
 	read = Column(Boolean, nullable = False, default = False)
 	operator = Column(Boolean, nullable = False, default = False)
 
+	file = Column(Boolean, nullable = False, default = False)
+
 	chat = relationship("Chat", backref = backref("messages", lazy = "dynamic"))
 	chat_id = Column(Integer, ForeignKey("chats.id"))
 
