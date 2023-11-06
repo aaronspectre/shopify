@@ -11,7 +11,7 @@ class WebSocketManager {
 			this.socket.send("CONNECTION_INIT#" + this.uuid);
 			if (window.location.pathname.includes("products")) {
 				this.socket.send(document.querySelector(".yv-product-detail-title").innerText);
-				this.socket.send(document.querySelector(".image-wrapper").querySelector("a").href);
+				this.socket.send(document.querySelector(".yv-product-zoom").href);
 			}
 			console.log("Connection established, ready for transmission.");
 			this.connected = true;
