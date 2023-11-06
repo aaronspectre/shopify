@@ -16,12 +16,11 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	}
 
 	$scope.sendMessage = () => {
-		console.log($scope.message)
 		if (!$scope.sms) return;
 		$http.post(
 			"/message/new",
 			{
-				content: $scope.message,
+				content: $scope.sms,
 				socket: $scope.currentChat.socket,
 				chat_id: $scope.currentChat.id
 			}
