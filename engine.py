@@ -42,9 +42,14 @@ async def websocket(socketio: WebSocket):
 					session.commit()
 					await socketio.send_text("ACCEPT_HANDSHAKE")
 				else:
+					if "%^%^%" in data:
+						file = True
+						data = data.replace("^%");
+					else:
+						file = False
 					data = data.split("%^%")
 					chat = session.query(tables.Chat).filter_by(socket = data[0]).first()
-					message = tables.Message(content = data[1], socket = data[0], date = datetime.now(), read = False, chat_id = chat.id)
+					message = tables.Message(content = data[1], socket = data[0], date = datetime.now(), read = False, chat_id = chat.id, file = file)
 					session.add(message)
 					session.commit()
 					await socketio.send_text("SYSTEM_CALL")
