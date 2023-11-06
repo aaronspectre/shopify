@@ -1,9 +1,14 @@
 class WebSocketManager {
 	constructor(route) {
 		this.socket = new WebSocket(route);
-		this.uuid = this.generate();
 		this.template = undefined;
 		this.connected = false;
+		if (window.localStorage.getItem("uuid") != null)
+			this.uuid = window.localStorage.getItem("uuid");
+		else {
+			this.uuid = this.generate();
+			window.localStorage.setItem("uuid", this.uuid);
+		}
 	}
 
 	init() {
