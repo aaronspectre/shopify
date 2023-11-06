@@ -43,7 +43,7 @@ async def websocket(socketio: WebSocket):
 					await socketio.send_text("ACCEPT_HANDSHAKE")
 				else:
 					data = data.split("%^%")
-					file = "https:" in file
+					file = "https:" in data[1]
 					chat = session.query(tables.Chat).filter_by(socket = data[0]).first()
 					message = tables.Message(content = data[1], socket = data[0], date = datetime.now(), read = False, chat_id = chat.id, file = file)
 					session.add(message)
