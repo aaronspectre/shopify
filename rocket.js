@@ -31,8 +31,8 @@ class WebSocketManager {
 
 	locate() {
 		if (window.location.pathname.includes("products")) {
-			this.socket.send(document.querySelector(".yv-product-detail-title").innerText);
-			this.socket.send(document.querySelector(".yv-product-zoom").href);
+			this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-detail-title").innerText);
+			this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-zoom").href);
 		}
 	}
 
