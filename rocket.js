@@ -4,15 +4,13 @@ class WebSocketManager {
 		this.uuid = this.generate();
 		this.template = undefined;
 		this.connected = false;
+		this.path = window.location.pathname;
 	}
 
 	init() {
 		this.socket.addEventListener("open", event => {
 			this.socket.send("CONNECTION_INIT#" + this.uuid);
-			if (window.location.pathname.includes("products")) {
-				this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-detail-title").innerText);
-				this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-zoom").href);
-			}
+			this.locate();
 			console.log("Connection established, ready for transmission.");
 			this.connected = true;
 		});
@@ -25,6 +23,13 @@ class WebSocketManager {
 			if (!event.data.includes("SYSTEM_CALL"))
 				this.template.injectMessage(event.data);
 		});
+	}
+
+	locate() {
+		if (this.pathname.includes("products") && window.location.pathname != this.pathname) {
+			this.socket.send(document.querySelector(".yv-product-detail-title").innerText);
+			this.socket.send(document.querySelector(".yv-product-zoom").href);
+		}
 	}
 
 	send(message) {
@@ -242,7 +247,7 @@ function rocket() {
 	margin-top: .5vh;
 	opacity: .7;
 	text-align: right;
-	font-size: 1.6vh;
+	font-size: 1.5vh;
 }
 #chat .chat-window-message .user-owner{
 	background: #c4ff91;

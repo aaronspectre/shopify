@@ -41,13 +41,13 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	}
 
 	$scope.search = function() {
-		$scope.container = $scope.chats.filter(chat => chat.socket.includes($scope.query));
+		$scope.container = $scope.chats.filter(chat => chat.id.toString().includes($scope.query));
 	}
 
 	$scope.interval = setInterval(function() {
 		$http.get("/chats").then(chats => {
 			$scope.chats = chats.data;
-			$scope.container = $scope.chats.filter(chat => chat.socket.includes($scope.query));
+			$scope.container = $scope.chats.filter(chat => chat.id.toString().includes($scope.query));
 		}, exception => {
 			clearInterval($scope.interval);
 		});

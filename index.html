@@ -11,15 +11,13 @@
 				this.uuid = this.generate();
 				this.template = undefined;
 				this.connected = false;
+				this.path = window.location.pathname;
 			}
 
 			init() {
 				this.socket.addEventListener("open", event => {
 					this.socket.send("CONNECTION_INIT#" + this.uuid);
-					if (window.location.pathname.includes("products")) {
-						this.socket.send(document.querySelector(".yv-product-detail-title").innerText);
-						this.socket.send(document.querySelector(".yv-product-zoom").href);
-					}
+					this.locate();
 					console.log("Connection established, ready for transmission.");
 					this.connected = true;
 				});
@@ -32,6 +30,13 @@
 					if (!event.data.includes("SYSTEM_CALL"))
 						this.template.injectMessage(event.data);
 				});
+			}
+
+			locate() {
+				if (this.pathname.includes("products") && window.location.pathname != this.pathname) {
+					this.socket.send(document.querySelector(".yv-product-detail-title").innerText);
+					this.socket.send(document.querySelector(".yv-product-zoom").href);
+				}
 			}
 
 			send(message) {
@@ -87,7 +92,7 @@
 				let text = document.createElement("span");
 				let date = document.createElement("small");
 				text.innerText = message;
-				date.innerText = new Date().toLocaleString("ru-RU", {year: "numeric", month: "numeric", day: "numeric"});
+				date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
 				if (user) {
 					text.classList.add("user-owner");
 					this.input.value = new String();
@@ -242,7 +247,7 @@
 			font-size: 2vh;
 		}
 		#chat .chat-window-message{
-			font-size: 2vh;
+			font-size: 1.8vh;
 			padding: 1vh 1.5vw 0 1.5vw;
 			display: flex;
 			flex-direction: column;
@@ -260,7 +265,7 @@
 			margin-top: .5vh;
 			opacity: .7;
 			text-align: right;
-			font-size: 1.6vh;
+			font-size: 1.5vh;
 		}
 		#chat .chat-window-message .user-owner{
 			background: #c4ff91;
