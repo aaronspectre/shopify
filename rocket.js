@@ -4,7 +4,6 @@ class WebSocketManager {
 		this.uuid = this.generate();
 		this.template = undefined;
 		this.connected = false;
-		this.path = window.location.pathname;
 	}
 
 	init() {
@@ -26,7 +25,7 @@ class WebSocketManager {
 	}
 
 	locate() {
-		if (this.pathname.includes("products") && window.location.pathname != this.pathname) {
+		if (window.location.pathname.includes("products")) {
 			this.socket.send(document.querySelector(".yv-product-detail-title").innerText);
 			this.socket.send(document.querySelector(".yv-product-zoom").href);
 		}
