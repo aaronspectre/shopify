@@ -110,6 +110,6 @@ body{
 	border-bottom-right-radius: 0;
 }
 #window .chat-message img{
-	width: 100%;
+	width: 60%;
 	border-radius: 2vh;
 }

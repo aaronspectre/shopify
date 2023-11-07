@@ -87,6 +87,7 @@
 			}
 
 			injectMessage(message, user = false) {
+				if (!message) return;
 				let container = document.createElement("div");
 				container.classList.add("chat-window-message");
 				let text = document.createElement("span");
@@ -95,7 +96,7 @@
 				date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
 				if (user) {
 					text.classList.add("user-owner");
-					this.input.value = new String();
+					this.input.value = undefined;
 				}
 				text.appendChild(date);
 				container.appendChild(text);
@@ -115,7 +116,8 @@
 			templateManager.window.classList.remove("fade");
 
 			if (templateManager.socket === undefined) {
-				window.socketManager = new WebSocketManager("wss://tutchat.ddns.net:8000/websocketio");
+				// window.socketManager = new WebSocketManager("wss://tutchat.ddns.net:8000/websocketio");
+				window.socketManager = new WebSocketManager("wss://localhost:8000/websocketio");
 				window.socketManager.init();
 
 				templateManager.socket = window.socketManager;
@@ -126,6 +128,14 @@
 		function hideWindow() {
 			templateManager.panel.classList.remove("fade");
 			templateManager.window.classList.add("fade");
+		}
+
+		function openFile() {
+			document.getElementById("file-upload").click();
+		}
+
+		function sendFile() {
+			console.log(document.getElementById("file-upload").files)
 		}
 
 		window.onload = function() {
@@ -142,6 +152,10 @@
 			<div class="chat-window-frame-date"></div>
 		</div>
 		<div class="chat-window-footer">
+			<button onclick="openFile()" class="send-file">
+				<input type="file" id="file-upload" onchange="sendFile()">
+				<img width="50" height="50" src="https://img.icons8.com/ios-filled/50/attach.png" alt="attach"/>
+			</button>
 			<input type="text" placeholder="Введите сообщение">
 			<button onclick="sendUserMessage()">
 				<img width="64" height="64" src="https://img.icons8.com/sf-black-filled/64/paper-plane.png" alt="paper-plane"/>
@@ -288,7 +302,7 @@
 			padding: 0 1vw;
 		}
 		#chat .chat-window-footer button{
-			width: 8%;
+			width: 15%;
 			height: 100%;
 			border: none;
 			background: white;
@@ -298,6 +312,17 @@
 			height: 4vh;
 			width: 100%;
 			object-fit: cover;
+		}
+		#chat .chat-window-footer .send-file{
+			width: 20%;
+		}
+		#chat .chat-window-footer .send-file img{
+			height: 80%;
+			width: 80%;
+			object-fit: contain;
+		}
+		#chat .chat-window-footer .send-file input{
+			display: none;
 		}
 		#chat .chat-window-footer input:focus{
 			outline: none;
@@ -323,6 +348,6 @@
 	</style>
 </head>
 <body>
-	
+
 </body>
 </html>
