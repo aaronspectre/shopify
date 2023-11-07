@@ -43,6 +43,13 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 		$scope.container = $scope.chats.filter(chat => chat.id.toString().includes($scope.query));
 	}
 
+	$scope.downloadFile = function(streamData) {
+		let image = new Image();
+		image.src = streamData;
+		let tab = window.open("");
+		tab.document.write(image.outerHTML);
+	}
+
 	$scope.interval = setInterval(function() {
 		$http.get("/chats").then(chats => {
 			$scope.chats = chats.data;
@@ -54,6 +61,7 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 		if ($scope.currentChat != undefined) {
 			$http.get("/messages", {params: {chat_id: $scope.currentChat.id}}).then(messages => {
 				$scope.messages = messages.data;
+				$scope.panel.scrollTop = $scope.panel.scrollHeight;
 			}, exception => {
 				clearInterval($scope.interval);
 			});

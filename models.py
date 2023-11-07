@@ -4,6 +4,8 @@ from pydantic import BaseModel
 class ChatModel(BaseModel):
 	id: int
 	socket: str
+	user: str
+	language: str
 
 class MessageModel(BaseModel):
 	id: int
@@ -12,5 +14,6 @@ class MessageModel(BaseModel):
 	read: bool
 	operator: bool
 	file: bool
+	stream: bool
 	date: datetime
 	chat_id: int

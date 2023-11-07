@@ -34,18 +34,33 @@ async def websocket(socketio: WebSocket):
 			await socketio.accept()
 			while True:
 				data = await socketio.receive_text()
+				await socketio.send_text("SYSTEM_CALL")
 				if "CONNECTION_INIT" in data:
-					uuid = data.replace("CONNECTION_INIT#", '')
+					data = data.split("#CONNECTION_INIT#")
+					uuid = data[1]
 					connection_pool[uuid] = socketio
-					chat = tables.Chat(socket = uuid)
+					chat = session.query(tables.Chat).filter_by(socket = uuid).first()
+					if chat != None:
+						chat.active = True
+						session.commit()
+						await socketio.send_text("ACCEPT_HANDSHAKE")
+						continue
+					settings = json.loads(data[0])
+					chat = tables.Chat(socket = uuid, user = settings["name"], language = settings["language"])
 					session.add(chat)
 					session.commit()
 					await socketio.send_text("ACCEPT_HANDSHAKE")
 				else:
-					data = data.split("%^%")
-					file = "https:" in data[1]
+					if "&%&" in data:
+						data = data.split("&%&")
+						stream = True
+						file = True
+					else:
+						data = data.split("%^%")
+						file = "https:" in data[1]
+						stream = False
 					chat = session.query(tables.Chat).filter_by(socket = data[0]).first()
-					message = tables.Message(content = data[1], socket = data[0], date = datetime.now(), read = False, chat_id = chat.id, file = file)
+					message = tables.Message(content = data[1], socket = data[0], date = datetime.now(), read = False, chat_id = chat.id, file = file, stream = stream)
 					session.add(message)
 					session.commit()
 					await socketio.send_text("SYSTEM_CALL")

@@ -11,6 +11,8 @@ class Chat(Base):
 	id = Column(Integer, primary_key = True)
 	socket = Column(String, nullable = False)
 	active = Column(Boolean, nullable = False, default = True)
+	user = Column(String, nullable = False)
+	language = Column(String, nullable = False)
 
 	def __repr__(self):
 		return self.content
@@ -27,6 +29,7 @@ class Message(Base):
 	operator = Column(Boolean, nullable = False, default = False)
 
 	file = Column(Boolean, nullable = False, default = False)
+	stream = Column(Boolean, nullable = False, default = False)
 
 	chat = relationship("Chat", backref = backref("messages", lazy = "dynamic"))
 	chat_id = Column(Integer, ForeignKey("chats.id"))
