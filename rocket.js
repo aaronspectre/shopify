@@ -43,7 +43,6 @@ class WebSocketManager {
 
 		this.socket.addEventListener("message", event => {
 			if (event.data.includes("ACCEPT_HANDSHAKE")) {
-				this.template.injectMessage(textTemplates[window.settings.language].greet);
 				return;
 			}
 			if (!event.data.includes("SYSTEM_CALL"))
@@ -112,6 +111,11 @@ class TemplateManager{
 					window.settings.waitingName = false;
 					window.settings.initializing = false;
 					this.injectMessage(textTemplates[window.settings.language].message);
+					window.writeHistory({
+						content: textTemplates[window.settings.language].greet,
+						date: new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}),
+						user: false
+					});
 					window.initConnection();
 					return;
 				}
@@ -128,13 +132,13 @@ class TemplateManager{
 		document.querySelector("head").appendChild(styletag);
 	}
 
-	injectMessage(message, user = false) {
+	injectMessage(message, user = false, time = undefined) {
 		let container = document.createElement("div");
 		container.classList.add("chat-window-message");
 		let text = document.createElement("span");
 		let date = document.createElement("small");
 		text.innerText = message;
-		date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
+		date.innerText = (time) ? time : new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
 		if (user) {
 			text.classList.add("user-owner");
 			this.input.value = new String();
@@ -143,6 +147,13 @@ class TemplateManager{
 		container.appendChild(text);
 		this.frame.appendChild(container);
 		this.frame.scrollTop = this.frame.scrollHeight;
+
+		if (time == undefined)
+			window.writeHistory({
+				content: message,
+				date: date.innerText,
+				user: user
+			});
 	}
 
 	injectSuggestions(options) {
@@ -183,6 +194,19 @@ window.initConnection = function() {
 	}
 }
 
+window.restoreHistory = function() {
+	let history = window.localStorage.getItem("chatHistory")
+	if (history == null) {
+		window.localStorage.setItem("chatHistory", JSON.stringify(new Array()));
+	}
+	return JSON.parse(window.localStorage.getItem("chatHistory"));
+}
+window.writeHistory = function(message) {
+	let history = window.restoreHistory();
+	history.push(message)
+	window.localStorage.setItem("chatHistory", JSON.stringify(history));
+}
+
 function viewChatBotWindow() {
 	if (timeNow.getHours() > 19) {
 		alert("Все операторы ушли домой (. В данный момент нет доспуных операторов.\n\nBarcha operatorlar uylariga ketishdi (. Hozirda mavjud operatorlar yo'q.");
@@ -196,6 +220,9 @@ function viewChatBotWindow() {
 		templateManager.injectSuggestions(["O'zbekcha%&%uz", "Русский%&%ru"]);
 	}
 	if (templateManager.socket == undefined && window.settings.initializing == false) {
+		window.restoreHistory().forEach(message => {
+			templateManager.injectMessage(message.content, message.user, message.date);
+		});
 		window.initConnection();
 	}
 }
