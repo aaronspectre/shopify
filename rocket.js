@@ -35,9 +35,8 @@ class WebSocketManager {
 
 	init() {
 		this.socket.addEventListener("open", event => {
-			console.log(window.settings);
 			this.socket.send(JSON.stringify(window.settings) + "#CONNECTION_INIT#" + this.uuid);
-			// this.locate();
+			this.locate();
 			console.log("Connection established, ready for transmission.");
 			this.connected = true;
 		});
@@ -411,8 +410,8 @@ function rocket() {
 	width: 20%;
 }
 #chat .chat-window-footer .send-file img{
-	height: 80%;
-	width: 80%;
+	height: 60%;
+	width: 60%;
 	object-fit: contain;
 }
 #chat .chat-window-footer .send-file input{
