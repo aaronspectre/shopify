@@ -1,27 +1,62 @@
+const timeNow = new Date();
+const textTemplates = {
+	"ru": {
+		"name": "Пожалуйста, отправьте ваше имя",
+		"message": "Пожалуйста, отправьте ваш вопрос, операторы скоро вам ответят",
+		"greet": "Здравствуйте, как мы вам помочь",
+		"file": "Файл отправлен"
+	},
+	"uz": {
+		"name": "Iltimos ismingizni jo'nating",
+		"message": "Iltimos, savolingizni yuboring, operatorlar sizga tez orada javob berishadi",
+		"greet": "Assolomu alaykum. Sizga qanday yordam bera olamiz",
+		"file": "File jo'natildi"
+	}
+};
+
+if (window.localStorage.getItem("settings") !== null) {
+	window.settings = JSON.parse(window.localStorage.getItem("settings"));
+} else {
+	window.settings = {
+		"waitingName": false,
+		"initializing": true,
+		"uuid": undefined
+	};
+}
+
 class WebSocketManager {
 	constructor(route) {
 		this.socket = new WebSocket(route);
+		this.uuid = this.generate();
 		this.template = undefined;
 		this.connected = false;
-		this.uuid = this.generate();
+		this.path = window.location.pathname;
 	}
 
 	init() {
 		this.socket.addEventListener("open", event => {
-			this.socket.send("CONNECTION_INIT#" + this.uuid);
-			this.locate();
+			console.log(window.settings);
+			this.socket.send(JSON.stringify(window.settings) + "#CONNECTION_INIT#" + this.uuid);
+			// this.locate();
 			console.log("Connection established, ready for transmission.");
 			this.connected = true;
 		});
 
 		this.socket.addEventListener("message", event => {
 			if (event.data.includes("ACCEPT_HANDSHAKE")) {
-				this.template.injectMessage("Assolomu alaykum. Sizga qanday yordam bera olamiz");
+				this.template.injectMessage(textTemplates[window.settings.language].greet);
 				return;
 			}
 			if (!event.data.includes("SYSTEM_CALL"))
 				this.template.injectMessage(event.data);
 		});
+
+		this.socket.addEventListener("close", event => {
+			console.log("Connection dropped by server");
+		})
+
+		window.settings.uuid = this.uuid;
+		window.localStorage.setItem("settings", JSON.stringify(window.settings));
 	}
 
 	locate() {
@@ -31,8 +66,13 @@ class WebSocketManager {
 		}
 	}
 
-	send(message) {
+	send(message, file = false) {
+		if (!message) return;
 		if (this.socket.readyState === 1) {
+			if (file) {
+				this.socket.send(this.uuid + "&%&" + message);
+				return true;
+			}
 			this.socket.send(this.uuid + "%^%" + message);
 			return true;
 		} else {
@@ -42,6 +82,7 @@ class WebSocketManager {
 	}
 
 	generate() {
+		if (window.settings.uuid != undefined) return window.settings.uuid;
 		return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
 			(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
 		);
@@ -61,10 +102,20 @@ class TemplateManager{
 		this.window = document.querySelector("#chat .chat-window");
 		this.frame = document.querySelector("#chat .chat-window-frame");
 		this.date = document.querySelector("#chat .chat-window-frame-date");
-		this.input = document.querySelector("#chat .chat-window-footer input");
+		this.status = document.querySelector("#chat #online-status");
+		this.input = document.querySelector("#chat .chat-window-footer #message-field");
 		this.input.addEventListener("keypress", event => {
 			if (event.key == "Enter") {
 				event.preventDefault();
+				if (window.settings.waitingName) {
+					window.settings.name = this.input.value;
+					this.injectMessage(this.input.value, true);
+					window.settings.waitingName = false;
+					window.settings.initializing = false;
+					this.injectMessage(textTemplates[window.settings.language].message);
+					window.initConnection();
+					return;
+				}
 				if (this.socket.send(this.input.value)) this.injectMessage(this.input.value, true);
 			}
 		});
@@ -84,7 +135,7 @@ class TemplateManager{
 		let text = document.createElement("span");
 		let date = document.createElement("small");
 		text.innerText = message;
-		date.innerText = new Date().toLocaleString("ru-RU", {year: "numeric", month: "numeric", day: "numeric"});
+		date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
 		if (user) {
 			text.classList.add("user-owner");
 			this.input.value = new String();
@@ -94,6 +145,26 @@ class TemplateManager{
 		this.frame.appendChild(container);
 		this.frame.scrollTop = this.frame.scrollHeight;
 	}
+
+	injectSuggestions(options) {
+		window.suggestions = document.createElement("div");
+		window.suggestions.classList.add("chat-window-frame-suggestions");
+		let section = undefined;
+		options.forEach(suggestion => {
+			section = document.createElement("section");
+			section.appendChild(document.createTextNode(suggestion.split("%&%")[0]));
+			section.setAttribute("data-value", suggestion.split("%&%")[1]);
+			section.addEventListener("click", event => {
+				window.settings.language = event.target.getAttribute("data-value");
+				this.injectMessage(event.target.innerText, true);
+				this.injectMessage(textTemplates[window.settings.language].name);
+				window.settings.waitingName = true;
+				window.suggestions.remove();
+			});
+			window.suggestions.appendChild(section);
+		});
+		this.frame.appendChild(window.suggestions);
+	}
 }
 
 let templateManager = new TemplateManager();
@@ -102,16 +173,31 @@ function sendChatBotUserMessage() {
 	if (window.socketManager.send(templateManager.input.value)) templateManager.injectMessage(templateManager.input.value, true);
 }
 
-function viewChatBotWindow() {
-	templateManager.panel.classList.add("fade");
-	templateManager.window.classList.remove("fade");
-
+window.initConnection = function() {
 	if (templateManager.socket === undefined) {
 		window.socketManager = new WebSocketManager("wss://tutchat.ddns.net:8000/websocketio");
 		window.socketManager.init();
 
 		templateManager.socket = window.socketManager;
 		window.socketManager.template = templateManager;
+		templateManager.status.color = "#00FF00";
+	}
+}
+
+function viewChatBotWindow() {
+	if (timeNow.getHours() > 19) {
+		alert("Все операторы ушли домой (. В данный момент нет доспуных операторов.\n\nBarcha operatorlar uylariga ketishdi (. Hozirda mavjud operatorlar yo'q.");
+		return;
+	}
+	templateManager.panel.classList.add("fade");
+	templateManager.window.classList.remove("fade");
+
+	if (window.settings.initializing) {
+		templateManager.injectMessage("Assolomu alaykum. iltimos tilni tanlang.\nЗдравствуйте, пожалуйста выберете язык.");
+		templateManager.injectSuggestions(["O'zbekcha%&%uz", "Русский%&%ru"]);
+	}
+	if (templateManager.socket == undefined && window.settings.initializing == false) {
+		window.initConnection();
 	}
 }
 
@@ -120,27 +206,48 @@ function hideChatBotWindow() {
 	templateManager.window.classList.add("fade");
 }
 
+function openFile() {
+	document.getElementById("file-upload").click();
+}
+
+function sendFile() {
+	let file = document.getElementById("file-upload").files[0];
+	if (file.size > 5000000) {
+		templateManager.injectMessage("5MB limit");
+		return;
+	}
+	const reader = new FileReader();
+	reader.onload = function(event) {
+		if (window.socketManager.send(reader.result, true)) templateManager.injectMessage(textTemplates[window.settings.language].file, true);
+	};
+	reader.readAsDataURL(file);
+}
+
 function rocket() {
 	console.log("ROCKET");
 	templateManager.body = document.querySelector("body");
 	templateManager.injectHTML(`<div class="chat-panel" onclick="viewChatBotWindow()">
-	<span>Открыть чат</span>
-</div>
-<div class="chat-window fade">
-	<div class="chat-window-header">
-		 <span>Оператор</span>
-		 <button onclick="hideChatBotWindow()">&#10006;</button>
+		<span>Открыть чат</span>
 	</div>
-	<div class="chat-window-frame">
-		<div class="chat-window-frame-date"></div>
-	</div>
-	<div class="chat-window-footer">
-		<input type="text" placeholder="Введите сообщение">
-		<button onclick="sendChatBotUserMessage()">
-			<img width="64" height="64" src="https://img.icons8.com/sf-black-filled/64/paper-plane.png" alt="paper-plane"/>
-		</button>
-	</div>
-</div>`);
+	<div class="chat-window fade">
+		<div class="chat-window-header">
+			 <span><font id="online-status" color="grey">•</font>&ensp;Чат с оператором</span>
+			 <button onclick="hideChatBotWindow()">&#10006;</button>
+		</div>
+		<div class="chat-window-frame">
+			<div class="chat-window-frame-date"></div>
+		</div>
+		<div class="chat-window-footer">
+			<button onclick="openFile()" class="send-file">
+				<input type="file" id="file-upload" onchange="sendFile()" accept="image/png, image/jpeg">
+				<img width="50" height="50" src="https://img.icons8.com/ios-filled/50/attach.png" alt="attach"/>
+			</button>
+			<input id="message-field" type="text" placeholder="Введите сообщение">
+			<button onclick="sendChatBotUserMessage()">
+				<img width="64" height="64" src="https://img.icons8.com/sf-black-filled/64/paper-plane.png" alt="paper-plane"/>
+			</button>
+		</div>
+	</div>`);
 	templateManager.injectCSS(`body{
 	padding: 0;
 	margin: 0;
@@ -227,8 +334,28 @@ function rocket() {
 	opacity: .6;
 	font-size: 2vh;
 }
-#chat .chat-window-message{
+#chat .chat-window-frame-suggestions{
+	margin-top: 2vh;
+	display: flex;
+	padding: 0 1.5vw;
 	font-size: 2vh;
+	justify-content: right;
+}
+#chat .chat-window-frame-suggestions section{
+	padding: .5vh .5vw;
+	border: 1px solid #329ea8;
+	margin-left: .5vw;
+	border-radius: 1vh;
+	color: #329ea8;
+	cursor: pointer;
+}
+#chat .chat-window-frame-suggestions section:hover{
+	background: #329ea8;
+	color: black;
+}
+#chat .chat-window-message{
+	margin-top: 1vh;
+	font-size: 1.8vh;
 	padding: 1vh 1.5vw 0 1.5vw;
 	display: flex;
 	flex-direction: column;
@@ -269,7 +396,7 @@ function rocket() {
 	padding: 0 1vw;
 }
 #chat .chat-window-footer button{
-	width: 8%;
+	width: 15%;
 	height: 100%;
 	border: none;
 	background: white;
@@ -279,6 +406,17 @@ function rocket() {
 	height: 4vh;
 	width: 100%;
 	object-fit: cover;
+}
+#chat .chat-window-footer .send-file{
+	width: 20%;
+}
+#chat .chat-window-footer .send-file img{
+	height: 80%;
+	width: 80%;
+	object-fit: contain;
+}
+#chat .chat-window-footer .send-file input{
+	display: none;
 }
 #chat .chat-window-footer input:focus{
 	outline: none;

@@ -40,7 +40,7 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	}
 
 	$scope.search = function() {
-		$scope.container = $scope.chats.filter(chat => chat.id.toString().includes($scope.query));
+		$scope.container = $scope.chats.filter(chat => chat.user.includes($scope.query));
 	}
 
 	$scope.downloadFile = function(streamData) {
@@ -53,7 +53,7 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	$scope.interval = setInterval(function() {
 		$http.get("/chats").then(chats => {
 			$scope.chats = chats.data;
-			$scope.container = $scope.chats.filter(chat => chat.id.toString().includes($scope.query));
+			$scope.container = $scope.chats.filter(chat => chat.user.includes($scope.query));
 		}, exception => {
 			clearInterval($scope.interval);
 		});
