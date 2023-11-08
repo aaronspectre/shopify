@@ -61,7 +61,6 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 		if ($scope.currentChat != undefined) {
 			$http.get("/messages", {params: {chat_id: $scope.currentChat.id}}).then(messages => {
 				$scope.messages = messages.data;
-				$scope.panel.scrollTop = $scope.panel.scrollHeight;
 			}, exception => {
 				clearInterval($scope.interval);
 			});
