@@ -111,6 +111,7 @@ class TemplateManager{
 					window.settings.waitingName = false;
 					window.settings.initializing = false;
 					this.injectMessage(textTemplates[window.settings.language].message);
+					this.injectMessage(textTemplates[window.settings.language].greet);
 					window.writeHistory({
 						content: textTemplates[window.settings.language].greet,
 						date: new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}),
