@@ -424,6 +424,28 @@ function rocket() {
 	border-bottom-right-radius: 0;
 	margin-left: auto;
 }
+#chat .chat-window-image{
+	margin-top: 1vh;
+	font-size: 1.8vh;
+	padding: 1vh 1.5vw 0 1.5vw;
+	display: flex;
+	flex-direction: column;
+	margin-left: auto;
+}
+#chat .chat-window-image img{
+	margin-left: auto;
+	width: 60%;
+	padding: 2vh;
+	background: #c4ff91;
+	border-radius: 3vh;
+	border-bottom-right-radius: 0;
+}
+#chat .chat-window-image small{
+	margin-top: .5vh;
+	opacity: .7;
+	text-align: right;
+	font-size: 1.5vh;
+}
 #chat .chat-window-footer{
 	width: 100%;
 	height: 10vh;
