@@ -427,6 +427,9 @@ function rocket() {
 	border-bottom-right-radius: 0;
 	margin-left: auto;
 }
+#chat .chat-window-message .user-owner small{
+	color: black;
+}
 #chat .chat-window-image{
 	margin-top: 1vh;
 	font-size: 1.8vh;
