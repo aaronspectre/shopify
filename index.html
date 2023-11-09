@@ -164,6 +164,19 @@
 					});
 			}
 
+			injectImage(base) {
+				let container = document.createElement("div");
+				container.classList.add("chat-window-image");
+				let image = document.createElement("img");
+				let date = document.createElement("small");
+				image.src = base;
+				date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
+				container.appendChild(image);
+				container.appendChild(date);
+				this.frame.appendChild(container);
+				this.frame.scrollTop = this.frame.scrollHeight;
+			}
+
 			injectSuggestions(options) {
 				window.suggestions = document.createElement("div");
 				window.suggestions.classList.add("chat-window-frame-suggestions");
@@ -254,7 +267,10 @@
 			}
 			const reader = new FileReader();
 			reader.onload = function(event) {
-				if (window.socketManager.send(reader.result, true)) templateManager.injectMessage(textTemplates[window.settings.language].file, true);
+				if (window.socketManager.send(reader.result, true)) {
+					templateManager.injectImage(reader.result);
+					templateManager.injectMessage(textTemplates[window.settings.language].file, true);
+				}
 			};
 			reader.readAsDataURL(file);
 		}
@@ -427,6 +443,28 @@
 			border-bottom-left-radius: 3vh;
 			border-bottom-right-radius: 0;
 			margin-left: auto;
+		}
+		#chat .chat-window-image{
+			margin-top: 1vh;
+			font-size: 1.8vh;
+			padding: 1vh 1.5vw 0 1.5vw;
+			display: flex;
+			flex-direction: column;
+			margin-left: auto;
+		}
+		#chat .chat-window-image img{
+			margin-left: auto;
+			width: 60%;
+			padding: 2vh;
+			background: #c4ff91;
+			border-radius: 3vh;
+			border-bottom-right-radius: 0;
+		}
+		#chat .chat-window-image small{
+			margin-top: .5vh;
+			opacity: .7;
+			text-align: right;
+			font-size: 1.5vh;
 		}
 		#chat .chat-window-footer{
 			width: 100%;

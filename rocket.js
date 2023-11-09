@@ -157,6 +157,19 @@ class TemplateManager{
 			});
 	}
 
+	injectImage(base) {
+		let container = document.createElement("div");
+		container.classList.add("chat-window-image");
+		let image = document.createElement("img");
+		let date = document.createElement("small");
+		image.src = base;
+		date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
+		container.appendChild(image);
+		container.appendChild(date);
+		this.frame.appendChild(container);
+		this.frame.scrollTop = this.frame.scrollHeight;
+	}
+
 	injectSuggestions(options) {
 		window.suggestions = document.createElement("div");
 		window.suggestions.classList.add("chat-window-frame-suggestions");
@@ -245,7 +258,10 @@ function sendFile() {
 	}
 	const reader = new FileReader();
 	reader.onload = function(event) {
-		if (window.socketManager.send(reader.result, true)) templateManager.injectMessage(textTemplates[window.settings.language].file, true);
+		if (window.socketManager.send(reader.result, true)) {
+			templateManager.injectImage(reader.result);
+			templateManager.injectMessage(textTemplates[window.settings.language].file, true);
+		}
 	};
 	reader.readAsDataURL(file);
 }
