@@ -418,6 +418,7 @@ function rocket() {
 	opacity: .7;
 	text-align: right;
 	font-size: 1.5vh;
+	color: white;
 }
 #chat .chat-window-message .user-owner{
 	background: #DDD;
