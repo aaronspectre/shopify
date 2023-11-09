@@ -407,7 +407,8 @@ function rocket() {
 	display: flex;
 	flex-direction: column;
 	width: 60%;
-	background: #DDD;
+	background: #303791;
+	color: white;
 	padding: 2vh;
 	border-radius: 3vh;
 	border-bottom-left-radius: 0;
@@ -419,7 +420,8 @@ function rocket() {
 	font-size: 1.5vh;
 }
 #chat .chat-window-message .user-owner{
-	background: #c4ff91;
+	background: #DDD;
+	color: black;
 	border-bottom-left-radius: 3vh;
 	border-bottom-right-radius: 0;
 	margin-left: auto;
@@ -436,7 +438,7 @@ function rocket() {
 	margin-left: auto;
 	width: 60%;
 	padding: 2vh;
-	background: #c4ff91;
+	background: #DDD;
 	border-radius: 3vh;
 	border-bottom-right-radius: 0;
 }
