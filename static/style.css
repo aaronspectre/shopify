@@ -1,10 +1,60 @@
 body{
 	padding: 0;
 	margin: 0;
+	font-family: monospace;
 }
 #wrapper{
 	display: flex;
 }
+
+#wrapper .login-panel{
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	background: whitesmoke;
+}
+#wrapper .login-form{
+	display: flex;
+	padding: 2vh 2vw;
+	padding-bottom: 5vh;
+	border-radius: 2vh;
+	flex-direction: column;
+	background: white;
+	box-shadow:
+  0px 0px 3.6px rgba(0, 0, 0, 0.024),
+  0px 0px 10px rgba(0, 0, 0, 0.035),
+  0px 0px 24.1px rgba(0, 0, 0, 0.046),
+  0px 0px 80px rgba(0, 0, 0, 0.07);
+}
+#wrapper .login-form h2{
+	text-align: center;
+	margin-bottom: 2vh;
+}
+#wrapper .login-form .form-group{
+	display: flex;
+	flex-direction: column;
+	margin-top: 3vh;
+}
+#wrapper .login-form .form-group input{
+	width: 20vw;
+	margin-top: 1vh;
+	padding: .6vh 1vw;
+	border: 1px solid darkgrey;
+	border-radius: 5px;
+}
+#wrapper .login-form .form-group input:focus{
+	outline: none;
+}
+#wrapper .login-form .form-group button{
+	padding: 1vh 0;
+	background: black;
+	color: white;
+	border: none;
+	border-radius: 5px;
+}
+
 #sidebar{
 	width: 30vw;
 	height: 100vh;
@@ -126,5 +176,37 @@ body{
 	justify-content: center;
 	align-items: center;
 	margin-right: 1vw;
+	cursor: pointer;
+}
+
+#cog-panel{
+	width: 100vw;
+	height: 100vh;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+}
+#cog-panel .cog-panel-division{
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+#cog-panel .division-header{
+	text-align: center;
+	border-bottom: 1px solid darkgrey;
+}
+#cog-panel .division-header i{
+	cursor: pointer;
+}
+#cog-panel .division-entry{
+	display: flex;
+	padding: 2vh 2vw;
+	border-bottom: 1px solid darkgrey;
+	text-overflow: ellipsis;
+}
+#cog-panel .division-entry .division-tools{
+	margin-left: auto;
+}
+#cog-panel .division-entry .division-tools i{
 	cursor: pointer;
 }

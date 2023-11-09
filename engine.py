@@ -1,11 +1,12 @@
 import json
+import hashlib
 import requests
 import starlette
 
 from typing import List
 
 from datetime import datetime
-from fastapi import FastAPI, WebSocket, Request
+from fastapi import FastAPI, WebSocket, Request, HTTPException
 
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -76,16 +77,59 @@ async def view_root(request: Request):
 async def view_chats(request: Request):
 	return templates.TemplateResponse("chats.html", {"request": request})
 
+@root.get("/view/login")
+async def view_login(request: Request):
+	return templates.TemplateResponse("login.html", {"request": request})
+
+@root.get("/view/cog")
+async def view_panel(request: Request):
+	return templates.TemplateResponse("cog.html", {"request": request})
+
+@root.get("/view/cog/hire")
+async def view_panel_hire(request: Request):
+	return templates.TemplateResponse("hire.html", {"request": request})
+
+@root.post("/authorize", response_model = models.OperatorModel)
+async def authorize(request: Request):
+	with sessionbuilder() as session:
+		payload = await request.json()
+		operator = session.query(tables.Operator).filter_by(username = payload["username"]).first()
+		if operator is None:
+			raise HTTPException(status_code = 404, detail = "User not found")
+		if operator.password != hashlib.sha256(payload["password"].encode()).hexdigest():
+			raise HTTPException(status_code = 404, detail = "Password is incorrect")
+		return operator
+
 @root.get("/chats", response_model = List[models.ChatModel])
 async def chats():
 	with sessionbuilder() as session:
 		chats = session.query(tables.Chat).filter_by(active = True).order_by(tables.Chat.id.desc()).all()
 		return chats
 
+@root.get("/chats/all", response_model = List[models.ChatModel])
+async def chats_all():
+	with sessionbuilder() as session:
+		chats = session.query(tables.Chat).all()
+		return chats
+
+@root.delete("/chats/delete/")
+async def chats_delete(chat_id: int):
+	with sessionbuilder() as session:
+		chat = session.query(tables.Chat).filter_by(id = chat_id).first()
+		session.delete(chat)
+		session.commit()
+		return True
+
 @root.get("/messages", response_model = List[models.MessageModel])
 async def messages(chat_id: int):
 	with sessionbuilder() as session:
 		messages = session.query(tables.Message).filter_by(chat_id = chat_id).all()
+		return messages
+
+@root.get("/messages/all", response_model = List[models.MessageModel])
+async def chats_all():
+	with sessionbuilder() as session:
+		messages = session.query(tables.Message).limit(50).all()
 		return messages
 
 @root.post("/message/new", response_model = bool)
@@ -114,4 +158,35 @@ async def new_message(request: Request):
 			chat = session.query(tables.Chat).filter_by(id = message.chat_id).first()
 			chat.active = False
 			session.commit()
+		return True
+
+@root.get("/operator/all", response_model = List[models.OperatorModel])
+async def operators():
+	with sessionbuilder() as session:
+		operators = session.query(tables.Operator).all()
+		return operators
+
+@root.post("/operator/new")
+async def operator_new(request: Request):
+	with sessionbuilder() as session:
+		payload = await request.json()
+		operator = session.query(tables.Operator).filter_by(username = payload["username"]).first()
+		if operator is not None:
+			raise HTTPException(status_code = 404, detail = "User already exists")
+
+		operator = tables.Operator(
+			name = payload["name"],
+			username = payload["username"],
+			password = hashlib.sha256(payload["password"].encode()).hexdigest()
+		)
+		session.add(operator)
+		session.commit()
+		return True
+
+@root.delete("/operator/delete/")
+async def operator_delete(operator_id: int):
+	with sessionbuilder() as session:
+		operator = session.query(tables.Operator).filter_by(id = operator_id).first()
+		session.delete(operator)
+		session.commit()
 		return True

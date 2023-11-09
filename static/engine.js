@@ -9,9 +9,13 @@ root.config(['$interpolateProvider', function($interpolateProvider) {
 
 root.config($routeProvider => {
 	$routeProvider.when('/', {
+		templateUrl: "/view/login"
+	}).when("/chats", {
 		templateUrl: "/view/chats"
-	}).when("/login", {
-		templateUrl: "/login"
+	}).when("/cog", {
+		templateUrl: "/view/cog"
+	}).when("/cog/hire", {
+		templateUrl: "/view/cog/hire"
 	})
 });
 

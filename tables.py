@@ -36,3 +36,14 @@ class Message(Base):
 
 	def __repr__(self):
 		return self.socket
+
+class Operator(Base):
+	__tablename__ = "operators"
+
+	id = Column(Integer, primary_key = True)
+	name = Column(String, nullable = False)
+	username = Column(String, nullable = False)
+	password = Column(String, nullable = False)
+
+	def __repr__(self):
+		return self.name

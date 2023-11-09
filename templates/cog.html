@@ -1,0 +1,37 @@
+<div id="wrapper" ng-controller="cog">
+	<div id="cog-panel">
+		<div class="cog-panel-division">
+			<div class="division-header">
+				<h3>Operators&ensp;<small><i class="fal fa-plus-circle" ng-click="hire()"></i></small></h3>
+			</div>
+			<div class="division-entry" ng-repeat="operator in operators">
+				<i class="fal fa-user">&ensp;</i>
+				<span>[[operator.name]]</span>
+				<div class="division-tools">
+					<i class="fal fa-trash" ng-click="deleteEntry(operator.id, 'operator')"></i>
+				</div>
+			</div>
+		</div>
+		<div class="cog-panel-division" style="border-left: 1px solid darkgrey; border-right: 1px solid darkgrey;">
+			<div class="division-header">
+				<h3>Chats</h3>
+			</div>
+			<div class="division-entry" ng-repeat="chat in chats">
+				<i class="fal fa-comments">&ensp;</i>
+				<span>[[chat.user]]</span>
+				<div class="division-tools">
+					<i class="fal fa-trash" ng-click="deleteEntry(chat.id, 'chat')"></i>
+				</div>
+			</div>
+		</div>
+		<div class="cog-panel-division">
+			<div class="division-header">
+				<h3>Messages</h3>
+			</div>
+			<div class="division-entry" ng-repeat="message in messages">
+				<i class="fal fa-message">&ensp;</i>
+				<span>[[cutMessage(message.content)]]</span>
+			</div>
+		</div>
+	</div>
+</div>

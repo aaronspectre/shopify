@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -16,4 +17,9 @@ class MessageModel(BaseModel):
 	file: bool
 	stream: bool
 	date: datetime
-	chat_id: int
+	chat_id: Optional[int] = None
+
+class OperatorModel(BaseModel):
+	id: int
+	name: str
+	username: str
