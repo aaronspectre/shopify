@@ -280,12 +280,9 @@ function rocket() {
 		<div class="chat-window-header">
 			<span>
 				<i id="online-status" class="far fa-user-headset"></i>
-				<font>
-					<p>Оператор</p>
-					<small>онлайн</small>
-				</font>
+				<font><p>Оператор</p><small>онлайн</small></font>
 			</span>
-			<button onclick="hideWindow()">&#10006;</button>
+			<button onclick="hideChatBotWindow()">&#10006;</button>
 		</div>
 		<div class="chat-window-frame">
 			<div class="chat-window-frame-date"></div>
@@ -367,24 +364,22 @@ function rocket() {
 }
 #chat .chat-window-header i{
 	margin-right: 1vw;
-	padding: 1vh;
-	width: 3vh;
-	height: 3vh;
+	width: 6vh;
+	height: 6vh;
 	border: 1px solid white;
+	color: white !important;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	border-radius: 100px;
 }
-#chat .chat-window-header font{
-	display: flex;
-	flex-direction: column;
-}
 #chat .chat-window-header font p{
 	margin: 0;
+	color: white !important;
 }
 #chat .chat-window-header font small{
 	opacity: .6;
+	color: white !important;
 }
 #chat .chat-window-header button{
 	margin-left: auto;
@@ -498,6 +493,7 @@ function rocket() {
 	padding: 1vh 0;
 	display: flex;
 	width: 100%;
+	background: white;
 }
 #chat .chat-window-footer input{
 	width: 100%;
