@@ -58,6 +58,7 @@
 
 				this.socket.addEventListener("close", event => {
 					console.log("Connection dropped by server");
+					templateManager.status.color = "grey";
 				})
 
 				window.settings.uuid = this.uuid;
@@ -107,7 +108,7 @@
 				this.window = document.querySelector("#chat .chat-window");
 				this.frame = document.querySelector("#chat .chat-window-frame");
 				this.date = document.querySelector("#chat .chat-window-frame-date");
-				// this.status = document.querySelector("#chat #online-status");
+				this.status = document.querySelector("#chat #online-status");
 				this.input = document.querySelector("#chat .chat-window-footer #message-field");
 				this.input.addEventListener("keypress", event => {
 					if (event.key == "Enter") {
@@ -216,7 +217,7 @@
 
 				templateManager.socket = window.socketManager;
 				window.socketManager.template = templateManager;
-				// templateManager.status.color = "#00FF00";
+				templateManager.status.color = "#00FF00";
 			}
 		}
 
@@ -287,8 +288,8 @@
 	<div class="chat-window fade">
 		<div class="chat-window-header">
 			<span>
-				<i id="online-status" class="far fa-user-headset"></i>
-				<font><b>Оператор</b><br><small>онлайн</small></font>
+				<i class="far fa-user-headset"></i>
+				<font>Оператор&ensp;<font id="online-status" color="grey">•</font></font>
 			</span>
 			<button onclick="hideWindow()">&#10006;</button>
 		</div>
@@ -381,6 +382,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			height: 100%;
 		}
 		#chat .chat-window-header i{
 			margin-right: 1vw;
@@ -392,16 +394,6 @@
 			justify-content: center;
 			align-items: center;
 			border-radius: 100px;
-		}
-		#chat .chat-window-header font b{
-			font-weight: bold;
-			color: white !important;
-			font-size: 2.5vh;
-		}
-		#chat .chat-window-header font small{
-			opacity: .6;
-			font-size: 1.8vh;
-			color: white !important;
 		}
 		#chat .chat-window-header button{
 			margin-left: auto;

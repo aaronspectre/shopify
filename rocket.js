@@ -51,6 +51,7 @@ class WebSocketManager {
 
 		this.socket.addEventListener("close", event => {
 			console.log("Connection dropped by server");
+			templateManager.status.color = "grey";
 		})
 
 		window.settings.uuid = this.uuid;
@@ -279,8 +280,8 @@ function rocket() {
 	<div class="chat-window fade">
 		<div class="chat-window-header">
 			<span>
-				<i id="online-status" class="far fa-user-headset"></i>
-				<font><b>Оператор</b><br><small>онлайн</small></font>
+				<i class="far fa-user-headset"></i>
+				<font>Оператор&ensp;<font id="online-status" color="grey">•</font></font>
 			</span>
 			<button onclick="hideChatBotWindow()">&#10006;</button>
 		</div>
@@ -361,16 +362,18 @@ function rocket() {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	height: 100%;
 }
-#chat .chat-window-header font b{
-	font-weight: bold;
+#chat .chat-window-header i{
+	margin-right: 1vw;
+	width: 6vh;
+	height: 6vh;
+	border: 1px solid white;
 	color: white !important;
-	font-size: 2.5vh;
-}
-#chat .chat-window-header font small{
-	opacity: .6;
-	font-size: 1.8vh;
-	color: white !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 100px;
 }
 #chat .chat-window-header i{
 	margin-right: 1vw;
