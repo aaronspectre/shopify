@@ -343,12 +343,36 @@ function rocket() {
 	background: #303791;
 	display: flex;
 	align-items: center;
-	padding: 0 1vw;
+	padding: 1vh 1vw;
 	color: white !important;
 	font-weight: bold;
 }
 #chat .chat-window-header span{
 	color: white !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#chat .chat-window-header i{
+	margin-right: 1vw;
+	padding: 1vh;
+	width: 3vh;
+	height: 3vh;
+	border: 1px solid white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 100px;
+}
+#chat .chat-window-header font{
+	display: flex;
+	flex-direction: column;
+}
+#chat .chat-window-header font p{
+	margin: 0;
+}
+#chat .chat-window-header font small{
+	opacity: .6;
 }
 #chat .chat-window-header button{
 	margin-left: auto;
@@ -455,9 +479,13 @@ function rocket() {
 #chat .chat-window-footer{
 	width: 100%;
 	height: 10vh;
-	background: blue;
 	display: flex;
 	border-top: 2px solid lightgrey;
+}
+#chat .chat-window-footer-input{
+	padding: 1vh 0;
+	display: flex;
+	width: 100%;
 }
 #chat .chat-window-footer input{
 	width: 100%;
@@ -465,26 +493,18 @@ function rocket() {
 	border-radius: 0;
 	border: none;
 	padding: 0 1vw;
+	border-radius: 1vh;
+	background: #DDD;
 }
 #chat .chat-window-footer button{
-	width: 15%;
 	height: 100%;
 	border: none;
 	background: white;
 	cursor: pointer;
+	padding: 0 1vw;
 }
-#chat .chat-window-footer button img{
-	height: 4vh;
-	width: 100%;
-	object-fit: cover;
-}
-#chat .chat-window-footer .send-file{
-	width: 20%;
-}
-#chat .chat-window-footer .send-file img{
-	height: 60%;
-	width: 60%;
-	object-fit: contain;
+#chat .chat-window-footer i{
+	font-size: 3vh;
 }
 #chat .chat-window-footer .send-file input{
 	display: none;

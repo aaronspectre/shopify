@@ -107,7 +107,7 @@
 				this.window = document.querySelector("#chat .chat-window");
 				this.frame = document.querySelector("#chat .chat-window-frame");
 				this.date = document.querySelector("#chat .chat-window-frame-date");
-				this.status = document.querySelector("#chat #online-status");
+				// this.status = document.querySelector("#chat #online-status");
 				this.input = document.querySelector("#chat .chat-window-footer #message-field");
 				this.input.addEventListener("keypress", event => {
 					if (event.key == "Enter") {
@@ -130,7 +130,7 @@
 						if (this.socket.send(this.input.value)) this.injectMessage(this.input.value, true);
 					}
 				});
-				this.date.innerHTML = "<span>" + new Date().toLocaleString("ru-RU", {year: "numeric", month: "numeric", day: "numeric"}) + "</span>"
+				this.date.innerHTML = "<span>" + new Date().toLocaleString("ru-RU", {year: "numeric", month: "long", day: "numeric"}) + "</span>"
 			}
 
 			injectCSS(rule) {
@@ -138,6 +138,10 @@
 				styletag.type = "text/css";
 				styletag.appendChild(document.createTextNode(rule));
 				document.querySelector("head").appendChild(styletag);
+				let icons = document.createElement("link");
+				icons.href = "https://pro.fontawesome.com/releases/v6.0.0-beta3/css/all.css";
+				icons.rel = "stylesheet";
+				document.querySelector("head").appendChild(icons);
 			}
 
 			injectMessage(message, user = false, time = undefined) {
@@ -212,7 +216,7 @@
 
 				templateManager.socket = window.socketManager;
 				window.socketManager.template = templateManager;
-				templateManager.status.color = "#00FF00";
+				// templateManager.status.color = "#00FF00";
 			}
 		}
 
@@ -282,8 +286,14 @@
 	</div>
 	<div class="chat-window fade">
 		<div class="chat-window-header">
-			 <span><font id="online-status" color="grey">•</font>&ensp;Чат с оператором</span>
-			 <button onclick="hideWindow()">&#10006;</button>
+			<span>
+				<i id="online-status" class="far fa-user-headset"></i>
+				<font>
+					<p>Оператор</p>
+					<small>онлайн</small>
+				</font>
+			</span>
+			<button onclick="hideWindow()">&#10006;</button>
 		</div>
 		<div class="chat-window-frame">
 			<div class="chat-window-frame-date"></div>
@@ -291,11 +301,13 @@
 		<div class="chat-window-footer">
 			<button onclick="openFile()" class="send-file">
 				<input type="file" id="file-upload" onchange="sendFile()" accept="image/png, image/jpeg">
-				<img width="50" height="50" src="https://img.icons8.com/ios-filled/50/attach.png" alt="attach"/>
+				<i class="far fa-paperclip"></i>
 			</button>
-			<input id="message-field" type="text" placeholder="Введите сообщение">
+			<div class="chat-window-footer-input">
+				<input id="message-field" type="text" placeholder="Введите сообщение">
+			</div>
 			<button onclick="sendUserMessage()">
-				<img width="64" height="64" src="https://img.icons8.com/sf-black-filled/64/paper-plane.png" alt="paper-plane"/>
+				<i class="fas fa-paper-plane-top"></i>
 			</button>
 		</div>
 	</div>`);
@@ -363,12 +375,36 @@
 			background: #303791;
 			display: flex;
 			align-items: center;
-			padding: 0 1vw;
+			padding: 1vh 1vw;
 			color: white !important;
 			font-weight: bold;
 		}
 		#chat .chat-window-header span{
 			color: white !important;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		#chat .chat-window-header i{
+			margin-right: 1vw;
+			padding: 1vh;
+			width: 3vh;
+			height: 3vh;
+			border: 1px solid white;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-radius: 100px;
+		}
+		#chat .chat-window-header font{
+			display: flex;
+			flex-direction: column;
+		}
+		#chat .chat-window-header font p{
+			margin: 0;
+		}
+		#chat .chat-window-header font small{
+			opacity: .6;
 		}
 		#chat .chat-window-header button{
 			margin-left: auto;
@@ -475,9 +511,13 @@
 		#chat .chat-window-footer{
 			width: 100%;
 			height: 10vh;
-			background: blue;
 			display: flex;
 			border-top: 2px solid lightgrey;
+		}
+		#chat .chat-window-footer-input{
+			padding: 1vh 0;
+			display: flex;
+			width: 100%;
 		}
 		#chat .chat-window-footer input{
 			width: 100%;
@@ -485,26 +525,18 @@
 			border-radius: 0;
 			border: none;
 			padding: 0 1vw;
+			border-radius: 1vh;
+			background: #DDD;
 		}
 		#chat .chat-window-footer button{
-			width: 15%;
 			height: 100%;
 			border: none;
 			background: white;
 			cursor: pointer;
+			padding: 0 1vw;
 		}
-		#chat .chat-window-footer button img{
-			height: 4vh;
-			width: 100%;
-			object-fit: cover;
-		}
-		#chat .chat-window-footer .send-file{
-			width: 20%;
-		}
-		#chat .chat-window-footer .send-file img{
-			height: 60%;
-			width: 60%;
-			object-fit: contain;
+		#chat .chat-window-footer i{
+			font-size: 3vh;
 		}
 		#chat .chat-window-footer .send-file input{
 			display: none;
