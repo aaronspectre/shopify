@@ -123,7 +123,7 @@ class TemplateManager{
 				if (this.socket.send(this.input.value)) this.injectMessage(this.input.value, true);
 			}
 		});
-		this.date.innerHTML = "<span>" + new Date().toLocaleString("ru-RU", {year: "numeric", month: "numeric", day: "numeric"}) + "</span>"
+		this.date.innerHTML = "<span>" + new Date().toLocaleString("ru-RU", {year: "numeric", month: "long", day: "numeric"}) + "</span>"
 	}
 
 	injectCSS(rule) {
@@ -131,6 +131,10 @@ class TemplateManager{
 		styletag.type = "text/css";
 		styletag.appendChild(document.createTextNode(rule));
 		document.querySelector("head").appendChild(styletag);
+		let icons = document.createElement("link");
+		icons.href = "https://pro.fontawesome.com/releases/v6.0.0-beta3/css/all.css";
+		icons.rel = "stylesheet";
+		document.querySelector("head").appendChild(icons);
 	}
 
 	injectMessage(message, user = false, time = undefined) {
@@ -274,8 +278,14 @@ function rocket() {
 	</div>
 	<div class="chat-window fade">
 		<div class="chat-window-header">
-			 <span><font id="online-status" color="grey">•</font>&ensp;Чат с оператором</span>
-			 <button onclick="hideChatBotWindow()">&#10006;</button>
+			<span>
+				<i id="online-status" class="far fa-user-headset"></i>
+				<font>
+					<p>Оператор</p>
+					<small>онлайн</small>
+				</font>
+			</span>
+			<button onclick="hideWindow()">&#10006;</button>
 		</div>
 		<div class="chat-window-frame">
 			<div class="chat-window-frame-date"></div>
@@ -283,11 +293,13 @@ function rocket() {
 		<div class="chat-window-footer">
 			<button onclick="openFile()" class="send-file">
 				<input type="file" id="file-upload" onchange="sendFile()" accept="image/png, image/jpeg">
-				<img width="50" height="50" src="https://img.icons8.com/ios-filled/50/attach.png" alt="attach"/>
+				<i class="far fa-paperclip"></i>
 			</button>
-			<input id="message-field" type="text" placeholder="Введите сообщение">
-			<button onclick="sendChatBotUserMessage()">
-				<img width="64" height="64" src="https://img.icons8.com/sf-black-filled/64/paper-plane.png" alt="paper-plane"/>
+			<div class="chat-window-footer-input">
+				<input id="message-field" type="text" placeholder="Введите сообщение">
+			</div>
+			<button onclick="sendUserMessage()">
+				<i class="fas fa-paper-plane-top"></i>
 			</button>
 		</div>
 	</div>`);
