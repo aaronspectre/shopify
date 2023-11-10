@@ -280,7 +280,7 @@ function rocket() {
 		<div class="chat-window-header">
 			<span>
 				<i id="online-status" class="far fa-user-headset"></i>
-				<font><p>Оператор</p><small>онлайн</small></font>
+				<font><font>Оператор</font><br><small>онлайн</small></font>
 			</span>
 			<button onclick="hideChatBotWindow()">&#10006;</button>
 		</div>
