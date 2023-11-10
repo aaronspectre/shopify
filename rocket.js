@@ -386,6 +386,9 @@ function rocket() {
 	align-items: center;
 	border-radius: 100px;
 }
+#chat .chat-window-header font{
+	font-size: 4vh;
+}
 #chat .chat-window-header button{
 	margin-left: auto;
 	background: none;
@@ -450,10 +453,10 @@ function rocket() {
 	border-bottom-left-radius: 0;
 }
 #chat .chat-window-message small{
-	margin-top: .5vh;
+	margin-top: .3vh;
 	opacity: .7;
 	text-align: right;
-	font-size: 1.5vh;
+	font-size: 1.2vh;
 	color: white;
 }
 #chat .chat-window-message .user-owner{
@@ -508,6 +511,7 @@ function rocket() {
 	padding: 0 1vw;
 	border-radius: 1vh;
 	background: #DDD;
+	font-size: 3vh;
 }
 #chat .chat-window-footer button{
 	height: 100%;
