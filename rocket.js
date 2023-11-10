@@ -366,6 +366,7 @@ function rocket() {
 }
 #chat .chat-window-header i{
 	margin-right: 1vw;
+	font-size: 2vh;
 	width: 6vh;
 	height: 6vh;
 	border: 1px solid white;
@@ -387,7 +388,7 @@ function rocket() {
 	border-radius: 100px;
 }
 #chat .chat-window-header font{
-	font-size: 4vh;
+	font-size: 2vh;
 }
 #chat .chat-window-header button{
 	margin-left: auto;
@@ -414,7 +415,7 @@ function rocket() {
 }
 #chat .chat-window-frame-date span{
 	opacity: .6;
-	font-size: 2vh;
+	font-size: 1.6vh;
 }
 #chat .chat-window-frame-suggestions{
 	margin-top: 2vh;
@@ -511,7 +512,7 @@ function rocket() {
 	padding: 0 1vw;
 	border-radius: 1vh;
 	background: #DDD;
-	font-size: 3vh;
+	font-size: 2vh;
 }
 #chat .chat-window-footer button{
 	height: 100%;
