@@ -67,6 +67,7 @@
 
 			locate() {
 				if (this.pathname.includes("products") && window.location.pathname != this.pathname) {
+					this.socket.send(window.location.href);
 					this.socket.send(document.querySelector(".yv-product-detail-title").innerText);
 					this.socket.send(document.querySelector(".yv-product-zoom").href);
 				}

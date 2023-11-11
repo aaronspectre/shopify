@@ -30,6 +30,7 @@ class Message(Base):
 
 	file = Column(Boolean, nullable = False, default = False)
 	stream = Column(Boolean, nullable = False, default = False)
+	href = Column(Boolean, nullable = True, default = False)
 
 	chat = relationship("Chat", backref = backref("messages", lazy = "dynamic"))
 	chat_id = Column(Integer, ForeignKey("chats.id"))

@@ -16,6 +16,7 @@ class MessageModel(BaseModel):
 	operator: bool
 	file: bool
 	stream: bool
+	href: bool
 	date: datetime
 	chat_id: Optional[int] = None
 

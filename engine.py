@@ -56,12 +56,19 @@ async def websocket(socketio: WebSocket):
 						data = data.split("&%&")
 						stream = True
 						file = True
+						href = False
+					elif "&**^" in data:
+						data = data.split("&**^")
+						stream = False
+						file = False
+						href = True
 					else:
 						data = data.split("%^%")
 						file = "https:" in data[1]
 						stream = False
+						href = False
 					chat = session.query(tables.Chat).filter_by(socket = data[0]).first()
-					message = tables.Message(content = data[1], socket = data[0], date = datetime.now(), read = False, chat_id = chat.id, file = file, stream = stream)
+					message = tables.Message(content = data[1], socket = data[0], date = datetime.now(), read = False, chat_id = chat.id, file = file, stream = stream, href = href)
 					session.add(message)
 					session.commit()
 					await socketio.send_text("SYSTEM_CALL")
