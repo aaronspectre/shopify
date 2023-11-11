@@ -164,6 +164,10 @@ body{
 	border-radius: 2vh;
 	border-bottom-left-radius: 0;
 }
+#window .chat-message a{
+	color: white;
+	text-decoration: underline;
+}
 #window .operator-message{
 	background: #303791;
 	margin-left: auto;
