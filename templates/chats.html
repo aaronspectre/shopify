@@ -17,7 +17,7 @@
 		<div class="chat-panel">
 			<div ng-repeat="message in messages" class="chat-message" ng-class="{'operator-message': message.operator}">
 				<span ng-if="!message.file && !message.href">[[message.content]]</span>
-				<a target="_blank" ng-if="message.href" href="[[message.content]]">[[message.content]]</a>
+				<a target="_blank" ng-if="message.href" href="[[message.content]]">Ссылка продукта</a>
 				<img ng-if="message.file && !message.stream" src="[[message.content]]">
 				<div class="chat-message-form" ng-if="message.file && message.stream">
 					<i class="fas fa-file" ng-click="downloadFile(message.content)"></i>
