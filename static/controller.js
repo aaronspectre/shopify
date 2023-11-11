@@ -52,6 +52,11 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 		});
 	}
 
+	$scope.logout = function() {
+		window.localStorage.clear();
+		$location.url('/');
+	}
+
 	$scope.sendMessage = () => {
 		if (!$scope.sms) return;
 		$http.post(
@@ -77,7 +82,7 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	}
 
 	$scope.search = function() {
-		$scope.container = $scope.chats.filter(chat => chat.user.includes($scope.query));
+		$scope.container = $scope.chats.filter(chat => chat.user.toLowerCase().includes($scope.query.toLowerCase()));
 	}
 
 	$scope.downloadFile = function(streamData) {
@@ -113,6 +118,10 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 });
 root.controller("cog", ($scope, $rootScope, $location, $http) => {
 	$scope.operator = JSON.parse(window.localStorage.getItem("operator"));
+	if ($scope.operator == null) {
+		$location.url('/');
+		return;
+	}
 
 	$scope.cutMessage = function(message) {
 		if (message.length > 45) {
@@ -120,6 +129,11 @@ root.controller("cog", ($scope, $rootScope, $location, $http) => {
 		} else {
 			return message;
 		}
+	}
+
+	$scope.logout = function() {
+		window.localStorage.clear();
+		$location.url('/');
 	}
 
 	$scope.deleteEntry = function(id, entry) {

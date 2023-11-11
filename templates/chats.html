@@ -1,6 +1,7 @@
 <div id="wrapper" ng-controller="chats">
 	<div id="sidebar">
 		<div class="sidebar-search">
+			<button ng-click="logout()"><i class="fas fa-left-from-line"></i></button>
 			<input type="text" placeholder="Поиск" ng-model="query" ng-change="search()">
 		</div>
 		<ul>

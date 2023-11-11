@@ -68,6 +68,17 @@ body{
 	padding: 2vh;
 	display: flex;
 }
+#sidebar .sidebar-search button{
+	margin-right: 1vw;
+	background: white;
+	border-radius: 5px;
+	border: 1px solid darkgrey;
+	width: 3vw;
+	cursor: pointer;
+}
+#sidebar .sidebar-search button:hover{
+	background: #DDD;
+}
 #sidebar .sidebar-search input{
 	width: 100%;
 	padding: 1vh;
