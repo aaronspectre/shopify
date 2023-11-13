@@ -229,14 +229,14 @@ window.writeHistory = function(message) {
 
 function viewChatBotWindow() {
 	if (timeNow.getHours() > 19) {
-		alert("Все операторы ушли домой (. В данный момент нет доспуных операторов.\n\nBarcha operatorlar uylariga ketishdi (. Hozirda mavjud operatorlar yo'q.");
+		alert("Все операторы ушли домой (\nВ данный момент нет доспуных операторов.\nBarcha operatorlar uylariga ketishdi (\n Hozirda mavjud operatorlar yo'q.");
 		return;
 	}
 	templateManager.panel.classList.add("fade");
 	templateManager.window.classList.remove("fade");
 
 	if (window.settings.initializing) {
-		templateManager.injectMessage("Assolomu alaykum. iltimos tilni tanlang.\nЗдравствуйте, пожалуйста выберете язык.");
+		templateManager.injectMessage("Assalomu alaykum, o'zingizga qulay tilni tanlang!\Здравствуйте, выберите для себя удобный язык!");
 		templateManager.injectSuggestions(["O'zbekcha%&%uz", "Русский%&%ru"]);
 	}
 	if (templateManager.socket == undefined && window.settings.initializing == false) {
