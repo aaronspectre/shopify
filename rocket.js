@@ -40,7 +40,7 @@ class WebSocketManager {
 	init() {
 		this.socket.addEventListener("open", event => {
 			this.socket.send(JSON.stringify(window.settings) + "#CONNECTION_INIT#" + this.uuid);
-			if (timeNow.getHours() > 19) {
+			if (timeNow.getHours() > 20) {
 				this.template.injectMessage(textTemplates[window.settings.language].unavailable, false, new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}));
 				this.template.injectLink("https://t.me/tutmarketcom", false, textTemplates[window.settings.language].telegram);
 				return;
