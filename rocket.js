@@ -3,7 +3,7 @@ const textTemplates = {
 	"ru": {
 		"name": "Пожалуйста, отправьте ваше имя",
 		"message": "Пожалуйста, отправьте ваш вопрос, операторы скоро вам ответят",
-		"greet": "Здравствуйте, как мы вам помочь",
+		"greet": "Здравствуйте, как мы можем вам помочь",
 		"file": "Файл отправлен"
 	},
 	"uz": {
@@ -45,6 +45,12 @@ class WebSocketManager {
 			if (event.data.includes("ACCEPT_HANDSHAKE")) {
 				return;
 			}
+			if (event.data.includes("https://") || event.data.includes("http://")) {
+				let link = event.data.slice(event.data.indexOf("http"), event.data.length).split(' ');
+				this.template.injectMessage(event.data.replace(link[0], ''));
+				this.template.injectLink(link[0]);
+				return;
+			}
 			if (!event.data.includes("SYSTEM_CALL"))
 				this.template.injectMessage(event.data);
 		});
@@ -63,6 +69,8 @@ class WebSocketManager {
 			this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-detail-title").innerText);
 			this.socket.send(this.uuid + "&**^" + window.location.href);
 			this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-zoom").href);
+			console.log("locating")
+			this.template.injectProduct();
 		}
 	}
 
@@ -159,8 +167,34 @@ class TemplateManager{
 			window.writeHistory({
 				content: message,
 				date: date.innerText,
-				user: user
+				user: user,
+				href: false
 			});
+	}
+
+	injectLink(href, history = true) {
+		let container = document.createElement("div");
+		container.classList.add("chat-window-link");
+		let link = document.createElement("a");
+		let em = document.createElement("em");
+		let date = document.createElement("small");
+		link.href = href;
+		em.innerText = "Ссылка";
+		date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
+		link.appendChild(em);
+		link.appendChild(date);
+		container.appendChild(link);
+		this.frame.appendChild(container);
+		this.frame.scrollTop = this.frame.scrollHeight;
+
+		if (history) {
+			window.writeHistory({
+				content: link.innerText,
+				date: date.innerText,
+				user: false,
+				href: href
+			});
+		}
 	}
 
 	injectImage(base) {
@@ -194,6 +228,30 @@ class TemplateManager{
 			window.suggestions.appendChild(section);
 		});
 		this.frame.appendChild(window.suggestions);
+	}
+
+	injectProduct() {
+		console.log("product injecting")
+		let card = document.createElement("div");
+		let container = document.createElement("div");
+		card.classList.add("chat-window-product-card");
+		container.classList.add("chat-window-product-card-container");
+		let image = document.createElement("img");
+		image.src = document.querySelector(".yv-product-zoom").href;
+		let details = document.createElement("div");
+		details.classList.add("chat-window-product-card-details");
+		let span = document.createElement("span");
+		let price = document.createElement("p");
+		let date = document.createElement("small");
+		date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
+		details.appendChild(span);
+		details.appendChild(price);
+		details.appendChild(date);
+		container.appendChild(image);
+		container.appendChild(details);
+		card.appendChild(container);
+		this.frame.appendChild(container);
+		this.frame.scrollTop = this.frame.scrollHeight;
 	}
 }
 
@@ -241,6 +299,10 @@ function viewChatBotWindow() {
 	}
 	if (templateManager.socket == undefined && window.settings.initializing == false) {
 		window.restoreHistory().forEach(message => {
+			if (message.href) {
+				templateManager.injectLink(message.href, false);
+				return;
+			}
 			templateManager.injectMessage(message.content, message.user, message.date);
 		});
 		window.initConnection();
@@ -297,7 +359,7 @@ function rocket() {
 			<div class="chat-window-footer-input">
 				<input id="message-field" type="text" placeholder="Введите сообщение">
 			</div>
-			<button onclick="sendUserMessage()">
+			<button onclick="sendChatBotUserMessage()">
 				<i class="fas fa-paper-plane-top"></i>
 			</button>
 		</div>
@@ -492,6 +554,67 @@ function rocket() {
 	opacity: .7;
 	text-align: right;
 	font-size: 1.5vh;
+}
+#chat .chat-window-link{
+	margin-top: 1vh;
+	font-size: 1.8vh;
+	padding: 1vh 1.5vw 0 1.5vw;
+	display: flex;
+	flex-direction: column;
+}
+#chat .chat-window-link a{
+	display: flex;
+	flex-direction: column;
+	width: 60%;
+	background: #303791;
+	color: white;
+	padding: 2vh;
+	border-radius: 3vh;
+	border-bottom-left-radius: 0;
+	text-decoration: none;
+}
+#chat .chat-window-link a em{
+	font-style: normal;
+	text-decoration: underline;
+}
+#chat .chat-window-link small{
+	margin-top: .3vh;
+	opacity: .7;
+	text-align: right;
+	font-size: 1.2vh;
+	color: white;
+}
+#chat .chat-window-product-card{
+	margin-top: 1vh;
+	font-size: 1.8vh;
+	padding: 1vh 1.5vw 0 1.5vw;
+}
+#chat .chat-window-product-card-container{
+	width: 100%;
+	margin-left: auto;
+	background: #DDD;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-column-gap: 1vw;
+	padding: 1vh;
+	border-radius: 2vh;
+}
+#chat .chat-window-product-card-details{
+	display: flex;
+	flex-direction: column;
+	padding-top: 1vh;
+	padding-right: 1vh;
+}
+#chat .chat-window-product-card img{
+	margin-left: auto;
+	width: 100%;
+	border-radius: 1vh;
+}
+#chat .chat-window-product-card-details small{
+	margin-top: auto;
+	opacity: .7;
+	text-align: right;
+	font-size: 1.2vh;
 }
 #chat .chat-window-footer{
 	width: 100%;
