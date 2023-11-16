@@ -26,7 +26,7 @@ connection_pool = dict()
 
 @root.get('/')
 async def index(request: Request):
-	pass
+	return "TuT Chat"
 
 @root.websocket("/websocketio")
 async def websocket(socketio: WebSocket):
