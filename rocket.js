@@ -5,14 +5,16 @@ const textTemplates = {
 		"message": "Пожалуйста, отправьте ваш вопрос, операторы скоро вам ответят",
 		"greet": "Здравствуйте, как мы можем вам помочь",
 		"file": "Файл отправлен",
-		"unavailable": "В данный момент нет доспуных операторов.\nПожалуйста оставьте ваши контактные данные, наши операторы свяжутся с вами в рабочее время."
+		"unavailable": "В данный момент нет доспуных операторов.\nПожалуйста оставьте ваши контактные данные, наши операторы свяжутся с вами в рабочее время.",
+		"telegram": "Или можете задать ваш вопрос в нашей телеграм группе t.me/tutmarketcom"
 	},
 	"uz": {
 		"name": "Iltimos ismingizni jo'nating",
 		"message": "Iltimos, savolingizni yuboring, operatorlar sizga tez orada javob berishadi",
 		"greet": "Assolomu alaykum. Sizga qanday yordam bera olamiz",
 		"file": "File jo'natildi",
-		"unavailable": "Hozirgi vaxtda mavjud operatorlar yo'q.\nIltimos kontaktlaringizni qoldiring, operatorlarimiz ish vaqtida siz bilan bog'lanadi."
+		"unavailable": "Hozirgi vaxtda mavjud operatorlar yo'q.\nIltimos kontaktlaringizni qoldiring, operatorlarimiz ish vaqtida siz bilan bog'lanadi.",
+		"telegram": "Yoki t.me/tutmarketcom telegram kanaliga sovolingizni yozishingiz mumkun"
 	}
 };
 
@@ -40,6 +42,7 @@ class WebSocketManager {
 			this.socket.send(JSON.stringify(window.settings) + "#CONNECTION_INIT#" + this.uuid);
 			if (timeNow.getHours() > 19) {
 				this.template.injectMessage(textTemplates[window.settings.language].unavailable, false, new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}));
+				this.template.injectLink(textTemplates[window.settings.language].telegram, false);
 				return;
 			}
 			this.locate();
@@ -53,8 +56,8 @@ class WebSocketManager {
 			}
 			if (event.data.includes("https://") || event.data.includes("http://")) {
 				let link = event.data.slice(event.data.indexOf("http"), event.data.length).split(' ');
-				if (event.data.replace(link[0], '')) this.template.injectMessage(event.data.replace(link[0], ''));
-				this.template.injectLink(link[0]);
+				if (event.data.replace(link[0], '')) this.template.injectLink(link[0], true, event.data.replace(link[0], ''));
+				else this.template.injectLink(link[0]);
 				return;
 			}
 			if (!event.data.includes("SYSTEM_CALL"))
@@ -243,6 +246,7 @@ class TemplateManager{
 		let price = document.createElement("p");
 		let date = document.createElement("small");
 		span.innerText = document.querySelector(".yv-product-detail-title").innerText;
+		if (span.innerText.length > 32) span.innerText = span.innerText.slice(0, 32) + " ...";
 		price.innerText = document.querySelector(".yv-product-price").innerText;
 		date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
 		details.appendChild(span);
