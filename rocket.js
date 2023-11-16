@@ -4,13 +4,15 @@ const textTemplates = {
 		"name": "Пожалуйста, отправьте ваше имя",
 		"message": "Пожалуйста, отправьте ваш вопрос, операторы скоро вам ответят",
 		"greet": "Здравствуйте, как мы можем вам помочь",
-		"file": "Файл отправлен"
+		"file": "Файл отправлен",
+		"unavailable": "В данный момент нет доспуных операторов.\nПожалуйста оставьте ваши контактные данные, наши операторы свяжутся с вами в рабочее время."
 	},
 	"uz": {
 		"name": "Iltimos ismingizni jo'nating",
 		"message": "Iltimos, savolingizni yuboring, operatorlar sizga tez orada javob berishadi",
 		"greet": "Assolomu alaykum. Sizga qanday yordam bera olamiz",
-		"file": "File jo'natildi"
+		"file": "File jo'natildi",
+		"unavailable": "Hozirgi vaxtda mavjud operatorlar yo'q.\nIltimos kontaktlaringizni qoldiring, operatorlarimiz ish vaqtida siz bilan bog'lanadi."
 	}
 };
 
@@ -36,6 +38,10 @@ class WebSocketManager {
 	init() {
 		this.socket.addEventListener("open", event => {
 			this.socket.send(JSON.stringify(window.settings) + "#CONNECTION_INIT#" + this.uuid);
+			if (timeNow.getHours() > 19) {
+				this.template.injectMessage(textTemplates[window.settings.language].unavailable, false, new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}));
+				return;
+			}
 			this.locate();
 			console.log("Connection established, ready for transmission.");
 			this.connected = true;
@@ -47,7 +53,7 @@ class WebSocketManager {
 			}
 			if (event.data.includes("https://") || event.data.includes("http://")) {
 				let link = event.data.slice(event.data.indexOf("http"), event.data.length).split(' ');
-				this.template.injectMessage(event.data.replace(link[0], ''));
+				if (event.data.replace(link[0], '')) this.template.injectMessage(event.data.replace(link[0], ''));
 				this.template.injectLink(link[0]);
 				return;
 			}
@@ -121,11 +127,6 @@ class TemplateManager{
 					window.settings.initializing = false;
 					this.injectMessage(textTemplates[window.settings.language].message);
 					this.injectMessage(textTemplates[window.settings.language].greet);
-					window.writeHistory({
-						content: textTemplates[window.settings.language].greet,
-						date: new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}),
-						user: false
-					});
 					window.initConnection();
 					return;
 				}
@@ -286,10 +287,6 @@ window.writeHistory = function(message) {
 }
 
 function viewChatBotWindow() {
-	if (timeNow.getHours() > 19) {
-		alert("Все операторы ушли домой (\nВ данный момент нет доспуных операторов.\nBarcha operatorlar uylariga ketishdi (\n Hozirda mavjud operatorlar yo'q.");
-		return;
-	}
 	templateManager.panel.classList.add("fade");
 	templateManager.window.classList.remove("fade");
 
