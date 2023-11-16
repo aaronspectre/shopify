@@ -69,7 +69,6 @@ class WebSocketManager {
 			this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-detail-title").innerText);
 			this.socket.send(this.uuid + "&**^" + window.location.href);
 			this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-zoom").href);
-			console.log("locating")
 			this.template.injectProduct();
 		}
 	}
@@ -231,7 +230,6 @@ class TemplateManager{
 	}
 
 	injectProduct() {
-		console.log("product injecting")
 		let card = document.createElement("div");
 		let container = document.createElement("div");
 		card.classList.add("chat-window-product-card");
@@ -243,6 +241,8 @@ class TemplateManager{
 		let span = document.createElement("span");
 		let price = document.createElement("p");
 		let date = document.createElement("small");
+		span.innerText = document.querySelector(".yv-product-detail-title").innerText;
+		price.innerText = document.querySelector(".yv-product-price").innerText;
 		date.innerText = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
 		details.appendChild(span);
 		details.appendChild(price);
@@ -250,7 +250,7 @@ class TemplateManager{
 		container.appendChild(image);
 		container.appendChild(details);
 		card.appendChild(container);
-		this.frame.appendChild(container);
+		this.frame.appendChild(card);
 		this.frame.scrollTop = this.frame.scrollHeight;
 	}
 }
