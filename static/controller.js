@@ -75,7 +75,7 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 				operator: true
 			});
 			$scope.sms = undefined;
-			$scope.panel.scrollTop = $scope.panel.scrollHeight;
+			$scope.panel.scrollTo(0, $scope.panel.scrollHeight + 1000);
 		}, exception => {
 			console.error(exception);
 		});
@@ -83,6 +83,17 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 
 	$scope.search = function() {
 		$scope.container = $scope.chats.filter(chat => chat.user.toLowerCase().includes($scope.query.toLowerCase()));
+	}
+
+	$scope.datetime = function(date) {
+		if (date) {
+			date = date.split('T');
+			return date[0] + ' ' + date[1].slice(0, 8);
+		}
+	}
+
+	$scope.presense = function(logic) {
+		if (logic) return (logic) ? "Онлайн" : "Офлайн";
 	}
 
 	$scope.downloadFile = function(streamData) {
@@ -95,7 +106,7 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	$scope.interval = setInterval(function() {
 		$http.get("/chats").then(chats => {
 			$scope.chats = chats.data;
-			$scope.container = $scope.chats.filter(chat => chat.user.includes($scope.query));
+			$scope.container = $scope.chats.filter(chat => chat.user.toLowerCase().includes($scope.query.toLowerCase()));
 		}, exception => {
 			clearInterval($scope.interval);
 		});

@@ -114,7 +114,7 @@ async def authorize(request: Request):
 @root.get("/chats", response_model = List[models.ChatModel])
 async def chats():
 	with sessionbuilder() as session:
-		chats = session.query(tables.Chat).filter_by(active = True).order_by(tables.Chat.id.desc()).all()
+		chats = session.query(tables.Chat).order_by(tables.Chat.id.desc()).all()
 		return chats
 
 @root.get("/chats/all", response_model = List[models.ChatModel])

@@ -12,16 +12,22 @@
 	</div>
 	<div id="window">
 		<div class="chat-header">
-			<span>[[currentChat.user]] ([[currentChat.language]])</span>
+			<span>[[currentChat.user]] ([[currentChat.language]]) <small>[[presense(currentChat.active)]]</small></span>
 		</div>
 		<div class="chat-panel">
 			<div ng-repeat="message in messages" class="chat-message" ng-class="{'operator-message': message.operator}">
-				<span ng-if="!message.file && !message.href">[[message.content]]</span>
-				<a target="_blank" ng-if="message.href" href="[[message.content]]">Ссылка продукта</a>
-				<img ng-if="message.file && !message.stream" src="[[message.content]]">
-				<div class="chat-message-form" ng-if="message.file && message.stream">
-					<i class="fas fa-file" ng-click="downloadFile(message.content)"></i>
+				<div class="message-wrapper" ng-class="{'operator-message-wrapper': message.operator}">
+					<span ng-if="!message.file && !message.href">[[message.content]]</span>
+					<a target="_blank" ng-if="message.href" href="[[message.content]]">Ссылка продукта</a>
+					<img ng-if="message.file && !message.stream" src="[[message.content]]">
+					<div class="chat-message-form" ng-if="message.file && message.stream">
+						<i class="fas fa-file" ng-click="downloadFile(message.content)"></i>
+					</div>
+					<small>[[datetime(message.date)]]</small>
 				</div>
+			</div>
+			<div class="empty-chat" ng-if="messages.length == 0">
+				<small>Этот чат пустой ...</small>
 			</div>
 		</div>
 		<div class="chat-footer">

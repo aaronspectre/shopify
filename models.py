@@ -6,6 +6,7 @@ class ChatModel(BaseModel):
 	id: int
 	socket: str
 	user: str
+	active: bool
 	language: str
 
 class MessageModel(BaseModel):
