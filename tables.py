@@ -38,6 +38,19 @@ class Message(Base):
 	def __repr__(self):
 		return self.socket
 
+class Inline(Base):
+	__tablename__ = "inlines"
+
+	id = Column(Integer, primary_key = True)
+	sent = Column(Boolean, nullable = False, default = False)
+	socket = Column(String, nullable = False)
+
+	message_id = Column(Integer, ForeignKey("messages.id"))
+	message = relationship("Message", backref = "inlines")
+
+	def __repr__(self):
+		return self.socket
+
 class Operator(Base):
 	__tablename__ = "operators"
 

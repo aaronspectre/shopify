@@ -1,0 +1,102 @@
+<div
+      class="--- mobile-category-menu-bar tabcontent{% if catalogDesktop %} d-lg-none{% endif %} {% unless section.settings.header_style == "header3" %}hidden{% endunless %}"
+      id="mobile-view-catalog"
+    >
+      <ul class="list-unstyled navbar-nav navbar-nav-sidebar">
+        {%- for link in linklists[section.settings.catalog_menu].links -%}
+         {% assign menuTitle = link.title | handleize  %} 
+         {% capture menubadge %}
+          {%  for block in section.blocks %}
+            {% if block.type == 'menu-badge' %}
+              {% assign badgetitle =  block.settings.badge_label | handleize  %}
+              {% if block.settings.menu_badge != blank and  badgetitle == menuTitle %}
+                 <span class="navPages-label new-label" id="menu-badge-{{ block.id }}">{{ block.settings.menu_badge }}</span>
+              {% endif %}
+            {% endif %}
+          {% endfor  %} 
+        {% endcapture %} 
+          <li class="nav-item sidemenu-animation {% if link.links != blank %}dropdown{% endif %} sidemenu-animation-delay-{{ forloop.index }} {% if link.current %}active{% endif %}">
+            {%- unless link.links != blank -%}
+              <a class="list-menu__item" href="{{ link.url }}">
+                {{ link.title | escape }}
+                  {% if menubadge != blank %}
+                    {{ menubadge }}
+                  {% endif  %}
+              </a>
+            {%- else -%}
+              <button class="list-menu__item {% if link.links  != '' %}toggle {% endif %}" href="{{ link.url }}">
+                {{ link.title | escape }}
+                  {% if menubadge != blank %}
+                    {{ menubadge }}
+                  {% endif  %}
+              </button>
+            {% endunless %}
+
+            <div class="inner child">
+              <ul class="list-unstyled">
+                {%- for childlink in link.links -%}
+                  <li class="nav-item {% if childlink.links != blank %}dropdown{% endif %}">
+                    {%- unless childlink.links != blank -%}
+                      <a class="toggle-level" href="{{ childlink.url }}"> {{ childlink.title | escape }}</a>
+                    {%- else -%}
+                      <button class="toggle-level">
+                        {{ childlink.title | escape }}
+                      </button>
+                    {%- endunless -%}
+                    {%- if childlink.links != blank -%}
+                      <div class="inner grandchild">
+                        <ul class="list-unstyled">
+                          {%- for grandchildlink in childlink.links -%}
+                            {% liquid
+                              assign grandlinkImage = ''
+                              if grandchildlink.type == 'collection_link'
+                                assign collect = grandchildlink.object
+                                assign grandlinkImage = collect.featured_image
+                              elsif grandchildlink.type == 'product_link'
+                                assign product = grandchildlink.object
+                                assign grandlinkImage = product.featured_image
+                              elsif grandchildlink.type == 'article_link'
+                                assign article = grandchildlink.object
+                                assign grandlinkImage = article.image
+                                assign grandlinkhref = article.link
+                              endif
+                            %}
+                            <li class="nav-item">
+                              <a href="{{ grandchildlink.url }}">
+                                <span>
+                                  {{ grandchildlink.title | escape }}
+                                </span>
+                                <div
+                                  class="image-wrapper"
+                                  style="padding-bottom:{{ 1 | divided_by : grandlinkImage.aspect_ratio | times: 100 }}%"
+                                >
+                                  {%- render 'lazy-image', image: grandlinkImage, class: 'lazypreload', width: '80x' -%}
+                                </div>
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </div>
+                    {% endif %}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          </li>
+        {%- endfor -%}
+        {%- if customer -%}
+          <li class="nav-item sidemenu-animation sidemenu-animation-delay-{{ itemCount }} {% if link.current %}active{% endif %}">
+            <a class="list-menu__item" href="{{- routes.account_url -}}">{{ 'customer.account.title' | t }}</a>
+          </li>
+        {%- endif -%}
+      </ul>
+      <div class="lower-nav">
+        <div class="menu-login-btn">
+          {%- if customer -%}
+            <a class="drawer-login-btn" href="{{ routes.account_logout_url }}">{{ 'customer.log_out' | t }}</a>
+          {%- else -%}
+            <a class="drawer-login-btn" href="{{ routes.account_login_url }}">{{ 'customer.log_in' | t }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>

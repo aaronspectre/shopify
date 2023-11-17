@@ -43,6 +43,10 @@ async def websocket(socketio: WebSocket):
 					chat = session.query(tables.Chat).filter_by(socket = uuid).first()
 					if chat != None:
 						chat.active = True
+						inlines = session.query(tables.Inline).filter_by(socket = uuid).filter_by(sent = False).all()
+						for inline in inlines:
+							await socketio.send_text(inline.message.content)
+							inline.sent = True
 						session.commit()
 						await socketio.send_text("ACCEPT_HANDSHAKE")
 						continue
@@ -160,10 +164,14 @@ async def new_message(request: Request):
 			except Exception as error:
 				chat = session.query(tables.Chat).filter_by(id = message.chat_id).first()
 				chat.active = False
+				inline = tables.Inline(socket = message.socket, message_id = message.id)
+				session.add(inline)
 				session.commit()
 		else:
 			chat = session.query(tables.Chat).filter_by(id = message.chat_id).first()
 			chat.active = False
+			inline = tables.Inline(socket = message.socket, message_id = message.id)
+			session.add(inline)
 			session.commit()
 		return True
 
