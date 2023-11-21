@@ -96,11 +96,16 @@ body{
 	list-style: none;
 }
 #sidebar li{
+	display: flex;
 	cursor: pointer;
 	padding: 2vh 2vw;
 }
 #sidebar li:hover{
 	background: #DDD;
+}
+#sidebar li small{
+	margin-left: auto;
+	color: green;
 }
 #sidebar .active-chat{
 	background: #EEE;

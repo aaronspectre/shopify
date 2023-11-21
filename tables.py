@@ -13,6 +13,7 @@ class Chat(Base):
 	active = Column(Boolean, nullable = False, default = True)
 	user = Column(String, nullable = False)
 	language = Column(String, nullable = False)
+	recent = Column(Boolean, nullable = True)
 
 	def __repr__(self):
 		return self.content

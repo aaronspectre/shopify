@@ -51,7 +51,7 @@ async def websocket(socketio: WebSocket):
 						await socketio.send_text("ACCEPT_HANDSHAKE")
 						continue
 					settings = json.loads(data[0])
-					chat = tables.Chat(socket = uuid, user = settings["name"], language = settings["language"])
+					chat = tables.Chat(socket = uuid, user = settings["name"], language = settings["language"], recent = True)
 					session.add(chat)
 					session.commit()
 					await socketio.send_text("ACCEPT_HANDSHAKE")
@@ -72,6 +72,7 @@ async def websocket(socketio: WebSocket):
 						stream = False
 						href = False
 					chat = session.query(tables.Chat).filter_by(socket = data[0]).first()
+					chat.recent = True
 					message = tables.Message(content = data[1], socket = data[0], date = datetime.now(), read = False, chat_id = chat.id, file = file, stream = stream, href = href)
 					session.add(message)
 					session.commit()
@@ -134,6 +135,10 @@ async def chats_delete(chat_id: int):
 @root.get("/messages", response_model = List[models.MessageModel])
 async def messages(chat_id: int):
 	with sessionbuilder() as session:
+		chat = session.get(tables.Chat, chat_id)
+		chat.recent = False
+		session.commit()
+
 		messages = session.query(tables.Message).filter_by(chat_id = chat_id).all()
 		return messages
 

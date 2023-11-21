@@ -7,6 +7,7 @@ class ChatModel(BaseModel):
 	socket: str
 	user: str
 	active: bool
+	recent: bool | None = None
 	language: str
 
 class MessageModel(BaseModel):

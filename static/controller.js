@@ -43,6 +43,7 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 
 	$scope.selectChat = function(chat) {
 		$scope.currentChat = chat;
+		$scope.currentChat.recent = false;
 		$http.get("/messages", {params: {chat_id: chat.id}}).then(messages => {
 			$scope.messages = messages.data;
 			$scope.panel.scrollTop = $scope.panel.scrollHeight;
@@ -90,6 +91,9 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 			date = date.split('T');
 			return date[0] + ' ' + date[1].slice(0, 8);
 		}
+	}
+	$scope.badge = function(logic) {
+		if (logic) return (logic) ? '◉' : '';
 	}
 
 	$scope.presense = function(logic) {
