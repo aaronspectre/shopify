@@ -41,9 +41,13 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	$scope.container = undefined;
 	$scope.query = new String();
 
+	$scope.conversations = new Array();
+
 	$scope.selectChat = function(chat) {
 		$scope.currentChat = chat;
 		$scope.currentChat.recent = false;
+		if ($scope.conversations.includes($scope.currentChat.socket))
+			$scope.conversations.splice($scope.conversations.indexOf($scope.currentChat.socket), 1);
 		$http.get("/messages", {params: {chat_id: chat.id}}).then(messages => {
 			$scope.messages = messages.data;
 			$scope.panel.scrollTop = $scope.panel.scrollHeight;
@@ -107,10 +111,28 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 		tab.document.write(image.outerHTML);
 	}
 
+	$scope.notify = function(message) {
+		if (Notification.permission == "granted") {
+			const notification = new Notification(message);
+		} else if (Notification.permission !== "denied") {
+			Notification.requestPermission().then((permission) => {
+				if (permission == "granted") {
+					const notification = new Notification(message);
+				}
+			})
+		}
+	}
+
 	$scope.interval = setInterval(function() {
 		$http.get("/chats").then(chats => {
 			$scope.chats = chats.data;
-			$scope.container = $scope.chats.filter(chat => chat.user.toLowerCase().includes($scope.query.toLowerCase()));
+			$scope.container = $scope.chats.filter(chat => {
+				if (chat.recent && !$scope.conversations.includes(chat.socket)) {
+					$scope.notify(chat.user);
+					$scope.conversations.push(chat.socket);
+				}
+				return chat.user.toLowerCase().includes($scope.query.toLowerCase());
+			});
 		}, exception => {
 			clearInterval($scope.interval);
 		});
