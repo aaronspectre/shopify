@@ -1,4 +1,4 @@
-#!/home/nuke/Server/python/shopify/hermetic/bin/python3
+#!/home/nuke/Server/python/shopify/hermetic/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -77,7 +77,7 @@ class WebSocketManager {
 		if (window.location.pathname.includes("products")) {
 			this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-detail-title").innerText);
 			this.socket.send(this.uuid + "&**^" + window.location.href);
-			this.socket.send(this.uuid + "%^%" + document.querySelector(".yv-product-zoom").href);
+			this.socket.send(this.uuid + "%^%" + "https:" + document.querySelector(".image-wrapper img").getAttribute("data-original"));
 			this.template.injectProduct();
 		}
 	}
@@ -239,7 +239,7 @@ class TemplateManager{
 		card.classList.add("chat-window-product-card");
 		container.classList.add("chat-window-product-card-container");
 		let image = document.createElement("img");
-		image.src = document.querySelector(".yv-product-zoom").href;
+		image.src = "https:" + document.querySelector(".image-wrapper img").getAttribute("data-original");
 		let details = document.createElement("div");
 		details.classList.add("chat-window-product-card-details");
 		let span = document.createElement("span");
