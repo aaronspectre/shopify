@@ -110,6 +110,7 @@ async def authorize(request: Request):
 			raise HTTPException(status_code = 404, detail = "User not found")
 		if operator.password != hashlib.sha256(payload["password"].encode()).hexdigest():
 			raise HTTPException(status_code = 404, detail = "Password is incorrect")
+		models.OperatorModel.from_orm(operator)
 		return operator
 
 @root.get("/chats", response_model = List[models.ChatModel])
@@ -186,6 +187,12 @@ async def operators():
 		operators = session.query(tables.Operator).all()
 		return operators
 
+@root.get("/operator/templates/", response_model = List[models.TemplateModel])
+async def operator_templates(operator_id: int):
+	with sessionbuilder() as session:
+		templates = session.query(tables.Template).filter_by(user_id = operator_id).all()
+		return templates
+
 @root.post("/operator/new")
 async def operator_new(request: Request):
 	with sessionbuilder() as session:
@@ -208,5 +215,22 @@ async def operator_delete(operator_id: int):
 	with sessionbuilder() as session:
 		operator = session.query(tables.Operator).filter_by(id = operator_id).first()
 		session.delete(operator)
+		session.commit()
+		return True
+
+@root.post("/template/create")
+async def template_create(request: Request):
+	with sessionbuilder() as session:
+		payload = await request.json()
+		template = tables.Template(message = payload["message"], language = payload["language"], user_id = payload["user_id"])
+		session.add(template)
+		session.commit()
+		return True
+
+@root.delete("/template/delete/")
+async def template_delete(template_id: int):
+	with sessionbuilder() as session:
+		template = session.get(tables.Template, template_id)
+		session.delete(template)
 		session.commit()
 		return True

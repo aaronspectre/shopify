@@ -40,6 +40,12 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	$scope.panel = document.querySelector("#window .chat-panel");
 	$scope.container = undefined;
 	$scope.query = new String();
+	$scope.operator = JSON.parse(window.localStorage.getItem("operator"))
+	$scope.preferences = {
+		tab: "Templates",
+		creating: false,
+		templating: false
+	}
 
 	$scope.conversations = new Array();
 
@@ -60,6 +66,49 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	$scope.logout = function() {
 		window.localStorage.clear();
 		$location.url('/');
+	}
+	$scope.showModal = function() {
+		document.querySelector("#modal").classList.add("visible-modal");
+	}
+	$scope.dismissModal = function() {
+		document.querySelector("#modal").classList.remove("visible-modal");
+	}
+	$scope.enableCreating = function() {
+		$scope.preferences.creating = !$scope.preferences.creating;
+	}
+	$scope.showTemplates = function() {
+		$scope.preferences.templating = !$scope.preferences.templating;
+	}
+
+	$scope.createTemplate = function() {
+		if ($scope.templateMessage) {
+			$http.post(
+				"/template/create",
+				{
+					message: $scope.templateMessage,
+					language: $scope.templateLanguage,
+					user_id: $scope.operator.id
+				},
+				{_HEADERS_}
+			).then(response => {
+				$scope.operator.templates.push({
+					message: $scope.templateMessage
+				});
+				$scope.templateMessage = undefined;
+				$scope.preferences.creating = false;
+			}, exception => {
+				console.log(exception);
+			});
+		}
+	}
+	$scope.removeTemplate = function(template) {
+		if (window.confirm("Удалить этот шаблон?")) {
+			$http.delete("/template/delete/", {params: {template_id: template.id}}).then(response => {
+				$scope.operator.templates.pop(template);
+			}, exception => {
+				console.log(exception);
+			})
+		}
 	}
 
 	$scope.sendMessage = () => {
@@ -84,6 +133,12 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 		}, exception => {
 			console.error(exception);
 		});
+	}
+	$scope.sendTemplate = function(template) {
+		$scope.sms = template.message;
+		$scope.sendMessage();
+		$scope.preferences.templating = false;
+		$scope.panel.scrollTop = $scope.panel.scrollHeight;
 	}
 
 	$scope.search = function() {
@@ -152,6 +207,11 @@ root.controller("chats", ($scope, $rootScope, $location, $http) => {
 	}, exception => {
 		console.log(exception);
 	});
+	$http.get("/operator/templates/", {params: {operator_id: $scope.operator.id}}).then(response => {
+		$scope.operator.templates = response.data;
+	}, exception => {
+		console.log(exception)
+	})
 });
 root.controller("cog", ($scope, $rootScope, $location, $http) => {
 	$scope.operator = JSON.parse(window.localStorage.getItem("operator"));

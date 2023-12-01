@@ -62,3 +62,16 @@ class Operator(Base):
 
 	def __repr__(self):
 		return self.name
+
+class Template(Base):
+	__tablename__ = "templates"
+
+	id = Column(Integer, primary_key = True)
+	message = Column(String, nullable = False)
+	language = Column(String, nullable = False)
+
+	user_id = Column(Integer, ForeignKey("operators.id"))
+	user = relationship("Operator", backref = "templates")
+
+	def __repr__(self):
+		return self.message

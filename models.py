@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -22,7 +22,19 @@ class MessageModel(BaseModel):
 	date: datetime
 	chat_id: Optional[int] = None
 
+class TemplateModel(BaseModel):
+	id: int
+	message: str
+	language: str
+
+	class Config:
+		from_attributes = True
+
 class OperatorModel(BaseModel):
 	id: int
 	name: str
 	username: str
+	templates: Optional[List[TemplateModel]] = None
+
+	class Config:
+		from_attributes = True

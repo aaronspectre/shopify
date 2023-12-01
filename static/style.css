@@ -55,6 +55,116 @@ body{
 	border-radius: 5px;
 }
 
+#modal{
+	display: flex;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	visibility: hidden;
+	opacity: 0;
+	transition: .2s ease;
+}
+.visible-modal{
+	visibility: visible !important;
+	opacity: 1 !important;
+}
+#modal .modal-cover{
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background: black;
+	opacity: .5;
+}
+#modal .modal-panel{
+	position: relative;
+	width: 70vw;
+	height: 80vh;
+	background: white;
+	display: flex;
+	flex-direction: column;
+}
+#modal .modal-panel-navbar{
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	height: 10%;
+}
+#modal .modal-panel-navbar-entry{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	border-bottom: 2px solid transparent;
+}
+#modal .modal-panel-navbar-entry:hover{
+	border-bottom-color: black;
+}
+#modal .active-tab{
+	border-bottom-color: black;
+}
+#modal .modal-panel-content{
+	display: flex;
+	flex-direction: column;
+	height: 90%;
+	background: white;
+	padding: 1vh 1vw;
+	overflow-y: scroll;
+}
+#modal .modal-panel-content-toolbar{
+	display: flex;
+	margin-bottom: 2vh;
+}
+#modal .modal-panel-content-toolbar button{
+	background: black;
+	border: none;
+	border-radius: none;
+	color: white;
+	padding: 1vh 1vw;
+	cursor: pointer;
+}
+#modal .modal-panel-content-toolbar button:hover{
+	opacity: .7;
+}
+#modal .modal-panel-content-form{
+	display: flex;
+	margin-bottom: 2vh;
+}
+#modal .modal-panel-content-form input, #modal .modal-panel-content-form select{
+	width: 100%;
+	margin-right: 1vw;
+	padding: 1vh 1vw;
+	border-radius: none;
+	border: 1px solid darkgrey;
+	background: white;
+}
+#modal .modal-panel-content-form input:focus{
+	outline: none;
+	border-color: black;
+}
+#modal .modal-panel-content-form button{
+	padding: 0 1vw;
+	border-radius: none;
+	border: none;
+	background: black;
+	color: white;
+	cursor: pointer;
+}
+#modal .modal-panel-content-entry{
+	display: flex;
+	background: #EEE;
+	width: 96%;
+	padding: 1vh 2%;
+	cursor: pointer;
+	text-overflow: ellipsis;
+	margin-bottom: 1vh;
+}
+#modal .modal-panel-content-entry:hover{
+	background: #DDD;
+}
+
 #sidebar{
 	width: 30vw;
 	height: 100vh;
@@ -67,9 +177,9 @@ body{
 #sidebar .sidebar-search{
 	padding: 2vh;
 	display: flex;
+	gap: 0 1vw;
 }
 #sidebar .sidebar-search button{
-	margin-right: 1vw;
 	background: white;
 	border-radius: 5px;
 	border: 1px solid darkgrey;
@@ -128,12 +238,34 @@ body{
 	opacity: .6;
 }
 #window .chat-panel{
-	height: 100%;
 	padding: 2vh 2vw;
 	display: flex;
 	flex-direction: column;
 	height: 80vh;
 	overflow-y: scroll;
+}
+#window .chat-templates-list{
+	padding: 2vh 2vw;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	height: 80vh;
+	overflow-y: scroll;
+}
+#window .chat-templates-list-section{
+	display: flex;
+	flex-direction: column;
+	justify-content: end;
+	gap: 1vh 0;
+	padding: 0 1vw;
+}
+#window .chat-templates-list-section span{
+	padding: .5vh 1vw;
+	border: 1px solid black;
+	cursor: pointer;
+}
+#window .chat-templates-list-section span:hover{
+	background: black;
+	color: white;
 }
 #window .chat-footer{
 	display: flex;

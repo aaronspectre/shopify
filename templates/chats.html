@@ -1,8 +1,39 @@
 <div id="wrapper" ng-controller="chats">
+	<div id="modal">
+		<div class="modal-cover" ng-click="dismissModal()"></div>
+		<div class="modal-panel">
+			<div class="modal-panel-navbar">
+				<div class="modal-panel-navbar-entry">
+					<span><i class="fas fa-cog"></i>&ensp;Настройки</span>
+				</div>
+				<div class="modal-panel-navbar-entry active-tab">
+					<span><i class="fas fa-message-dots"></i>&ensp;Шаблоны</span>
+				</div>
+			</div>
+			<div class="modal-panel-content" ng-show="preferences.tab == 'Setttings'"></div>
+			<div class="modal-panel-content" ng-show="preferences.tab == 'Templates'">
+				<div class="modal-panel-content-toolbar">
+					<button ng-click="enableCreating()"><i class="fas fa-circle-plus"></i>&ensp;Добавить</button>
+				</div>
+				<div class="modal-panel-content-form" ng-show="preferences.creating">
+					<input type="text" placeholder="Сообщение" ng-model="templateMessage">
+					<select ng-model="templateLanguage">
+						<option value="uz">UZ</option>
+						<option value="ru">RU</option>
+					</select>
+					<button ng-click="createTemplate()"><i class="fas fa-floppy-disk"></i></button>
+				</div>
+				<div class="modal-panel-content-entry" ng-repeat="template in operator.templates" ng-click="removeTemplate(template)">
+					[[template.message]]
+				</div>
+			</div>
+		</div>
+	</div>
 	<div id="sidebar">
 		<div class="sidebar-search">
 			<button ng-click="logout()"><i class="fas fa-left-from-line"></i></button>
 			<input type="text" placeholder="Поиск" ng-model="query" ng-change="search()">
+			<button ng-click="showModal()"><i class="fas fa-cog"></i></button>
 		</div>
 		<ul>
 			<li ng-repeat="chat in container | orderBy: '-recent'" ng-click="selectChat(chat)" ng-class="{'active-chat': currentChat.socket == chat.socket}">
@@ -15,7 +46,7 @@
 		<div class="chat-header">
 			<span>[[currentChat.user]] ([[currentChat.language]]) <small>[[presense(currentChat.active)]]</small></span>
 		</div>
-		<div class="chat-panel">
+		<div class="chat-panel" ng-show="!preferences.templating">
 			<div ng-repeat="message in messages" class="chat-message" ng-class="{'operator-message': message.operator}">
 				<div class="message-wrapper" ng-class="{'operator-message-wrapper': message.operator}">
 					<span ng-if="!message.file && !message.href">[[message.content]]</span>
@@ -31,7 +62,16 @@
 				<small>Этот чат пустой ...</small>
 			</div>
 		</div>
+		<div class="chat-templates-list" ng-show="preferences.templating">
+			<div class="chat-templates-list-section">
+				<span ng-repeat="template in operator.templates | filter: {language: 'uz'}" ng-click="sendTemplate(template)">[[template.message]]</span>
+			</div>
+			<div class="chat-templates-list-section">
+				<span ng-repeat="template in operator.templates | filter: {language: 'ru'}" ng-click="sendTemplate(template)">[[template.message]]</span>
+			</div>
+		</div>
 		<div class="chat-footer">
+			<button ng-click="showTemplates()"><i class="fas fa-message-dots"></i></button>
 			<input ng-disabled="currentChat == undefined" onkeypress="onenterkey(event)" type="text" placeholder="Сообщение" ng-model="sms">
 			<button ng-click="sendMessage()"><i class="fas fa-paper-plane-top"></i></button>
 		</div>
