@@ -268,7 +268,7 @@ function sendChatBotUserMessage() {
 
 window.initConnection = function() {
 	if (templateManager.socket === undefined) {
-		window.socketManager = new WebSocketManager("wss://tutchat.ddns.net:8000/websocketio");
+		window.socketManager = new WebSocketManager("wss://tutlive.ddns.net:8000/websocketio");
 		window.socketManager.init();
 
 		templateManager.socket = window.socketManager;
